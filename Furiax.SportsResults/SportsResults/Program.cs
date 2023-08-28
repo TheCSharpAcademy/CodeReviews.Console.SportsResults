@@ -9,7 +9,7 @@ static void SendMail()
 	int portNumber = 587;
 	bool enableSSL = true;
 	string emailFromAddress = "furiaxtest@gmail.com";
-	string password = "cpgzpekzbeapbllg";
+	string password = "****";
 	string emailToAddress = "carlmalfliet@proximus.be";
 	string subject = "Sport results";
 	string body = "Hello, this is a test email. Soon this will contain the sport results";
