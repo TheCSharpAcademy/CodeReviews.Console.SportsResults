@@ -41,6 +41,3 @@ static public class WindowsTaskScheduler
         folder.DeleteTask(taskName);
     }
 }
-
-//Dont forget to install the nugget package.
-//https://github.com/dahall/TaskScheduler/wiki/ for more info on how to use the TaskScheduler

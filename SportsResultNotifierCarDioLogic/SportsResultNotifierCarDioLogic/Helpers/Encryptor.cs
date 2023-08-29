@@ -7,8 +7,6 @@ static public class Encryptor
 {
     static public string EncryptPassword(string password)
     {
-        //for security reasons the encryption key should not be hardcoded. Its better to generate a random key and store it safely away from prying eyes.
-        string encryptionKey = "0123456789ABCDEF0123456789ABCDEF";
         using Aes aesAlg = Aes.Create();
         aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
         aesAlg.IV = new byte[aesAlg.BlockSize / 8];

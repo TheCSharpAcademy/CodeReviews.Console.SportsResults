@@ -1,7 +1,5 @@
 ﻿using AutomaticNBAResultsEmailer.Model;
 using Newtonsoft.Json;
-using System.Reflection;
-using SportsResultNotifierCarDioLogic; 
 
 namespace AutomaticNBAResultsEmailer;
 

@@ -13,10 +13,6 @@ NBA results will now be sent.....");
 
 Thread.Sleep(2000);
 
-
-//DateTime dateCounter = DateTime.Now;
-//Date of last emailing session (and the counter counts backards until it reaches it!!!
-
 string dateOfLastSentEmailString = JsonHelpers.ReadFromJSON();
 DateTime dateOfLastSentEmail;
 
@@ -33,7 +29,7 @@ while(dateOfLastSentEmail <= DateTime.Now.AddDays(-1))
 {
     string dateOfGamesToSend = dateOfLastSentEmail.ToString("yyyy/MM/dd");
 
-    (string subject, string body) = emailService.PrepareContent(dateOfGamesToSend); //give a date here or else it will keep returning yesterday's date!
+    (string subject, string body) = emailService.PrepareContent(dateOfGamesToSend);
     emailService.SendEmailService(subject, body);
 
     Console.WriteLine($"Email with list of NBA games played on {dateOfGamesToSend} was sent.");

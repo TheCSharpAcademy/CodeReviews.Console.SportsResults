@@ -12,10 +12,8 @@ internal class WebScrapper
         HtmlWeb web = new HtmlWeb();
         HtmlDocument document = web.Load($"https://www.basketball-reference.com/boxscores/?month={month}&day={day}&year={year}");
 
-        // Get all of the game nodes
         var gameNodes = document.DocumentNode.SelectNodes("//*[@id=\"content\"]/div[3]/div/table[1]/tbody");
 
-    // Iterate over the game nodes and create a `Game` object for each one
         if(gameNodes != null)
         {
             foreach (var gameNode in gameNodes)

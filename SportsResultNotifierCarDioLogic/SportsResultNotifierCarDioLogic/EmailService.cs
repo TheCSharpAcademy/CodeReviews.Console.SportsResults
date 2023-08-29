@@ -52,7 +52,6 @@ public class EmailService
 
         SmtpClient smtpClient = SetEmailClient(emailDomain, email, decryptedPassword);
 
-        //if the email domain is supported. The user is allowed to create and send the email.
         if (emailDomain == "gmail.com" || emailDomain == "hotmail.com")
         {
             try

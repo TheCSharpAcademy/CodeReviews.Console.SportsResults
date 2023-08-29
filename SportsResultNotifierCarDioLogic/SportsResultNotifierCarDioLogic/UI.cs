@@ -1,6 +1,5 @@
 ﻿using Spectre.Console;
 using SportsResultNotifierCarDioLogic.Helpers;
-using System.Globalization;
 
 namespace SportsResultNotifierCarDioLogic;
 
@@ -60,7 +59,7 @@ Current user email: {currentUser}
                 case MenuOptions.SendEmail:
                     if (NBAconfigHelpers.ReadFromNBAconfig().email != "")
                     {
-                        string date = AnsiConsole.Prompt(new TextPrompt<string>("Type date to get list of game results sent to Email:"));
+                        string date = AnsiConsole.Prompt(new TextPrompt<string>("Type date to get list of game results sent to Email (yyyy/MM/dd):"));
                         if (UILogic.IsValidDate(date))
                         {
                             (string subject, string body) = emailService.PrepareContent(date);

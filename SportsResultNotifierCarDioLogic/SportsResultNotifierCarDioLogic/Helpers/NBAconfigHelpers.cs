@@ -36,8 +36,6 @@ public class NBAconfigHelpers
         }
         else
         {
-            //Will never get to this point logically. You only read when you want to send emails. And the progam does not let you do anything email related unitl you set up userConfigs and therefore create the file...
-            // Handle the case where the configuration file doesn't exist yet
             return ("", "", false);
         }
     }
@@ -46,7 +44,7 @@ public class NBAconfigHelpers
     {
         string assemblyLocation = Assembly.GetExecutingAssembly().Location;
         string assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
-        string solutionFolderPath = Path.GetFullPath(Path.Combine(assemblyDirectory, "..\\..\\..\\..")); // Adjust the number of "..\\" to match your solution's location
+        string solutionFolderPath = Path.GetFullPath(Path.Combine(assemblyDirectory, "..\\..\\..\\.."));
         return solutionFolderPath;
-    }//will get the absolute path of my console project
+    }
 }
