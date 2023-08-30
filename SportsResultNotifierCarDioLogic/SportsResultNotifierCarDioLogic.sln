@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SportsResultNotifierCarDioLogic", "SportsResultNotifierCarDioLogic\SportsResultNotifierCarDioLogic.csproj", "{6997E625-1D57-4648-87AD-49DBA177661D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomaticNBAResultsEmailer", "AutomaticNBAResultsEmailer\AutomaticNBAResultsEmailer.csproj", "{EF272732-01B1-484C-B8A7-8929C33CDEFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6997E625-1D57-4648-87AD-49DBA177661D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6997E625-1D57-4648-87AD-49DBA177661D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6997E625-1D57-4648-87AD-49DBA177661D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6997E625-1D57-4648-87AD-49DBA177661D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF272732-01B1-484C-B8A7-8929C33CDEFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF272732-01B1-484C-B8A7-8929C33CDEFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF272732-01B1-484C-B8A7-8929C33CDEFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF272732-01B1-484C-B8A7-8929C33CDEFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB8CCA6C-25A3-4845-9698-FB68903AD4F4}
+	EndGlobalSection
+EndGlobal
