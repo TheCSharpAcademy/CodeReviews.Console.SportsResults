@@ -1,9 +1,14 @@
-﻿using SportsResults;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SportsResults;
 
-var results = Scrape.GetGame("https://www.basketball-reference.com/boxscores/");
 
-string date = results.Date;
-List<GameModel> games = results.Games;
-
-Mail.SendMail(date, games);
-
+var host = Host.CreateDefaultBuilder(args)
+		.ConfigureServices((hostContext, services) =>
+		{
+			services.AddHostedService<SportResultsService>();
+			services.AddSingleton<Scrape>();
+			services.AddSingleton<Mail>();
+		})
+		.Build();
+host.Run();

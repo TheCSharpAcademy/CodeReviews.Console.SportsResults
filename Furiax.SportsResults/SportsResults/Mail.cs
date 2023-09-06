@@ -5,7 +5,7 @@ namespace SportsResults
 {
 	internal class Mail
 	{
-		public static void SendMail(string date, List<GameModel> games)
+		internal static void SendMail(string date, List<GameModel> games)
 		{
 			string smtpAddress = "smtp.gmail.com";
 			int portNumber = 587;
@@ -23,7 +23,6 @@ namespace SportsResults
 			{
 				body += $"\n{game.HomeTeam} vs {game.AwayTeam}: {game.HomeScore} - {game.AwayScore}";
 			}
-			Console.WriteLine(body);
 
 			using (MailMessage mail = new MailMessage())
 			{

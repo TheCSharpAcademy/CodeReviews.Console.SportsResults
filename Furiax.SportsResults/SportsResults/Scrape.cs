@@ -2,7 +2,7 @@
 
 namespace SportsResults
 {
-	internal class Scrape
+	public class Scrape
 	{
 		internal static (string Date, List<GameModel> Games) GetGame(string url)
 		{
