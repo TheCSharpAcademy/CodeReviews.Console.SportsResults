@@ -14,14 +14,15 @@ namespace SportsResults
 			string password = "";
 			string emailToAddress = "carlmalfliet@proximus.be";
 			string subject = "Sport results";
-			string body = $"{date}\n";
+			string body = $"<p>{date}</p>";
 
-			body += new string('-', date.Length);
+			//body += new string('-', date.Length);
+			body += "<hr />";
 
 			
 			foreach (GameModel game in games)
 			{
-				body += $"\n{game.HomeTeam} vs {game.AwayTeam}: {game.HomeScore} - {game.AwayScore}";
+				body += $"<p>{game.HomeTeam} vs {game.AwayTeam}: {game.HomeScore} - {game.AwayScore}</p>";
 			}
 
 			using (MailMessage mail = new MailMessage())
