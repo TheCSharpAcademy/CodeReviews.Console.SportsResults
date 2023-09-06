@@ -10,16 +10,16 @@ namespace SportsResults
 			string smtpAddress = "smtp.gmail.com";
 			int portNumber = 587;
 			bool enableSSL = true;
-			string emailFromAddress = "furiaxtest@gmail.com";
+
+			// fill in the emailFromAddress, password and emailToAddress before using
+			string emailFromAddress = "";
 			string password = "";
-			string emailToAddress = "carlmalfliet@proximus.be";
+			string emailToAddress = "";
 			string subject = "Sport results";
 			string body = $"<p>{date}</p>";
 
-			//body += new string('-', date.Length);
 			body += "<hr />";
 
-			
 			foreach (GameModel game in games)
 			{
 				body += $"<p>{game.HomeTeam} vs {game.AwayTeam}: {game.HomeScore} - {game.AwayScore}</p>";
@@ -45,7 +45,6 @@ namespace SportsResults
 				{
 					Console.WriteLine($"Error mail not send: {ex.Message}");
 				}
-
 			}
 		}
 	}

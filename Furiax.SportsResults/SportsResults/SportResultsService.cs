@@ -15,7 +15,7 @@ namespace SportsResults
 		protected override async Task ExecuteAsync(CancellationToken stopToken)
 		{
 			var now = DateTime.Now;
-			var sendTime = new DateTime(now.Year, now.Month, now.Day, 9, 30, 0);
+			var sendTime = new DateTime(now.Year, now.Month, now.Day, 10, 01, 0);
 			if (now > sendTime)
 			{
 				sendTime = sendTime.AddDays(1);
