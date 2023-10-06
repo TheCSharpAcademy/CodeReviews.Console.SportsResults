@@ -14,13 +14,24 @@ namespace SportsResults.Forser
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            DateTime startTime = DateTime.Now;
+            DateTime sendTime = new DateTime(startTime.Year, startTime.Month, startTime.Day, 10, 01, 0);
+            if (startTime > sendTime)
+            {
+                sendTime = sendTime.AddDays(1);
+            }
+            TimeSpan startupDelay = sendTime - startTime;
+            await Task.Delay(startupDelay, stoppingToken);
+
             try
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     _notifier.GenerateNotification();
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                    await Task.Delay(1000, stoppingToken);
+                    sendTime = sendTime.AddDays(1);
+                    TimeSpan delay = sendTime - DateTime.Now;
+                    await Task.Delay(delay, stoppingToken);
                 }
             }
             catch (OperationCanceledException) { }
@@ -29,7 +40,6 @@ namespace SportsResults.Forser
                 _logger.LogError(ex, "{message}", ex.Message);
                 Environment.Exit(1);
             }
-
         }
     }
 }

@@ -8,7 +8,7 @@ namespace SportsResults.Forser.Services
         HtmlDocument LoadWebsite(string url);
         string GetDateOfResults(HtmlDocument htmlDoc);
         List<HtmlNode> GetAllNodes(HtmlDocument htmlDoc);
-        GameModel GenerateGameModel(HtmlDocument htmlDoc);
-        string GenerateEmail(GameModel gameModel);
+        List<GameModel> GenerateGameModel(List<HtmlNode> htmlNodes);
+        string GenerateEmail(List<GameModel> gameModels, string title);
     }
 }

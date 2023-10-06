@@ -23,7 +23,19 @@ namespace SportsResults.Forser.Services
 
                 if (page != null)
                 {
-                    Console.WriteLine($"{page.DocumentNode.SelectSingleNode("//div[@class='index']/h1").InnerText}");
+                    string title = _scraper.GetDateOfResults(page);
+
+                    var nodes = _scraper.GetAllNodes(page);
+                    if(nodes.Count > 0)
+                    {
+                        List<GameModel> games = _scraper.GenerateGameModel(nodes);
+                        if (games.Count > 0)
+                        {
+                            string email = _scraper.GenerateEmail(games, title);
+
+                            _emailService.SendEmail(email);
+                        }
+                    }
                 }
             }
             catch (Exception ex)

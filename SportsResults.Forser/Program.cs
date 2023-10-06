@@ -11,7 +11,6 @@ internal static class Program
     {
         configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
     }
-
     static void Main(string[] args)
     {
         using IHost host = CreateHostBuilder(args).Build();
