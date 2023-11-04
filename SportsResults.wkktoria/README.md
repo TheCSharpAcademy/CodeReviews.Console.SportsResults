@@ -2,6 +2,6 @@
 
 ## Setting up
 
-1. Set the appropriate values in `app.config`.
+The sender email address, sender email password and receiver email address should be set up in `app.config`.
 
-The time when emails are sent can be changed in `NotifierSerivce.cs`.
+The time when emails are sent can be changed in `Services/NotifierSerivce.cs`.
