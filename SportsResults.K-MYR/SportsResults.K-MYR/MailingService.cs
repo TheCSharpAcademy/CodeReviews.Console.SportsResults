@@ -8,17 +8,17 @@ namespace SportsResults.K_MYR;
 
 public class MailingService : BackgroundService
 {
-        private readonly ILogger<MailingService> _Logger;
-        private readonly IWebScrapper _Scrapper;
-        private readonly string StmpAdress = "smtp.gmail.com";
-        private readonly int PortNumber = 587;
-        private readonly bool EnableSSL = true;
-        private readonly string EmailSender = ConfigurationManager.AppSettings.Get("EmailSender") ?? "";
-        private readonly string Password = ConfigurationManager.AppSettings.Get("EmailPassword") ?? "";
-        private readonly string EmailReceiver = ConfigurationManager.AppSettings.Get("EmailReceiver") ?? "";
+    private readonly ILogger<MailingService> _Logger;
+    private readonly IWebScrapper _Scrapper;
+    private readonly string StmpAdress = "smtp.gmail.com";
+    private readonly int PortNumber = 587;
+    private readonly bool EnableSSL = true;
+    private readonly string EmailSender = ConfigurationManager.AppSettings.Get("EmailSender") ?? "";
+    private readonly string Password = ConfigurationManager.AppSettings.Get("EmailPassword") ?? "";
+    private readonly string EmailReceiver = ConfigurationManager.AppSettings.Get("EmailReceiver") ?? "";
 
     public MailingService(IWebScrapper scrapper, ILogger<MailingService> logger)
-    {   
+    {
         _Logger = logger;
         _Scrapper = scrapper;
     }
@@ -26,14 +26,14 @@ public class MailingService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken token)
     {
         _Logger.LogInformation("Service is starting");
-        
-        SendMail();   
+
+        SendMail();
 
         using PeriodicTimer timer = new(TimeSpan.FromDays(1));
 
         try
         {
-            while(await timer.WaitForNextTickAsync(token))
+            while (await timer.WaitForNextTickAsync(token))
             {
                 SendMail();
             }
@@ -60,7 +60,7 @@ public class MailingService : BackgroundService
             {
                 mail.From = new MailAddress(EmailSender);
                 mail.To.Add(EmailReceiver);
-                mail.Subject = "Your Daily Sports Update!";
+                mail.Subject = $"Your Sports Update From {games[0].Date}";
                 mail.Body = GenerateBody(games);
                 mail.IsBodyHtml = true;
 
@@ -70,24 +70,24 @@ public class MailingService : BackgroundService
                 smtp.Send(mail);
             }
 
-            _Logger.LogInformation("Email was send at {date}", DateTime.UtcNow);            
+            _Logger.LogInformation("Email was send at {date}", DateTime.UtcNow);
         }
         catch (Exception ex)
         {
             _Logger.LogError("An Error Occured Sending The Mail: {ex}", ex.Message);
-        }        
+        }
     }
 
-    private string GenerateBody(List<GameSummary> games)
+    private static string GenerateBody(List<GameSummary> games)
     {
         string body = @$"<h2>Welcome To Your Sports Update!</h2>
-        <p>There were {games.Count} games played on {games[0].Date}:<p><hr/><br/>";
+        <p>There were {games.Count} games played on {games[0].Date}:<p><hr/>";
 
         foreach (var game in games)
         {
             body += @$"
                         <div>
-                            <h5 href='{game.Gamelink}'>{game.GuestTeam} vs {game.HomeTeam}</h5>
+                            <h3><a href='{game.Gamelink}'>{game.GuestTeam} vs {game.HomeTeam}</a></h3>
                                 <table>
                                     <tbody>
                                         <tr>
@@ -99,37 +99,37 @@ public class MailingService : BackgroundService
                                     </tbody>             
                             </table>
                             <table>
-                                    <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4<th></thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{game.GuestTeam}</td>
-                                            <td>{game.PointsPerQuarterGuest[0]}</td>
-                                            <td>{game.PointsPerQuarterGuest[1]}</td>
-                                            <td>{game.PointsPerQuarterGuest[2]}</td>
-                                            <td>{game.PointsPerQuarterGuest[3]}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{game.HomeTeam}</td>
-                                            <td>{game.PointsPerQuarterHome[0]}</td>
-                                            <td>{game.PointsPerQuarterHome[1]}</td>
-                                            <td>{game.PointsPerQuarterHome[2]}</td>
-                                            <td>{game.PointsPerQuarterHome[3]}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>PTS</strong>></td><td>{game.PlayerWithMostPoints}</td><td>{game.MostPoints}
-                                            <td><strong>TRB</strong>></td><td>{game.PlayerWithMostTotalRebounds}</td><td>{game.MostTotalRebounds}
-                                        </tr>
-                                        <tr>
-                                            <td>{game.HomeTeam}</td><td>{game.HomeTeamPoints}</td>
-                                        </tr>
-                                    </tbody>             
+                                <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4<th></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{game.GuestTeam}</td>
+                                        <td>{game.PointsPerQuarterGuest[0]}</td>
+                                        <td>{game.PointsPerQuarterGuest[1]}</td>
+                                        <td>{game.PointsPerQuarterGuest[2]}</td>
+                                        <td>{game.PointsPerQuarterGuest[3]}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{game.HomeTeam}</td>
+                                        <td>{game.PointsPerQuarterHome[0]}</td>
+                                        <td>{game.PointsPerQuarterHome[1]}</td>
+                                        <td>{game.PointsPerQuarterHome[2]}</td>
+                                        <td>{game.PointsPerQuarterHome[3]}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>PTS</strong></td><td>{game.PlayerWithMostPoints}</td><td>{game.MostPoints}<td>
+                                    </tr>
+                                    <tr>
+
+                                        <td><strong>TRB</strong></td><td>{game.PlayerWithMostTotalRebounds}</td><td>{game.MostTotalRebounds}<td>
+                                    </tr>
+                                </tbody>             
                             </table>
                             <hr/>
-                        </div>";                
+                        </div>";
         }
 
         return body;

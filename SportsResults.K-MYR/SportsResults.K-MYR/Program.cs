@@ -11,7 +11,3 @@ builder.Services.AddHostedService<MailingService>();
 using IHost host = builder.Build();
 
 await host.RunAsync();
-
-
-
-
