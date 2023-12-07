@@ -8,9 +8,9 @@ namespace SportsResults.Speedierone
 {
     public class Results
     {
-        public string? Team1 {  get; set; }
-        public string? Team2{ get; set; }
-        public int? Score1 { get; set; }
-        public int? Score2 { get; set; }
+        public string? WinningTeam {  get; set; }
+        public string? LosingTeam { get; set; }
+        public int? WinningScore{ get; set; }
+        public int? LosingScore { get; set; }
     }
 }
