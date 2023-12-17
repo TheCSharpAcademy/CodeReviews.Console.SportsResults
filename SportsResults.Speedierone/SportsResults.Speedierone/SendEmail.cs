@@ -12,9 +12,9 @@ namespace SportsResults.Speedierone
         static string smtpAddress = "smtp.gmail.com";
         static int portNumber = 587;
         static bool enableSSL = true;
-        static string emailFromAddress = Helpers.GetUserInput("Please enter email to send from\n");
-        static string password = Helpers.GetUserInput("Please enter password\n");
-        static string emailToAddress = Helpers.GetUserInput("Please enter email address to send to.");
+        static string emailFromAddress = Helpers.GetUserInput("\nPlease enter email to send from");
+        static string password = Helpers.GetUserInput("\nPlease enter password\n");
+        static string emailToAddress = Helpers.GetUserInput("\nPlease enter email address to send to.");
         static string subject = "Todays NBA Results";
 
         public static void SendResultEmail(string body)
