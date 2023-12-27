@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsResults.UgniusFalze", "SportsResults.UgniusFalze\SportsResults.UgniusFalze.csproj", "{BBF91971-14C8-4FB0-95F9-4DB1B2A405EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBF91971-14C8-4FB0-95F9-4DB1B2A405EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBF91971-14C8-4FB0-95F9-4DB1B2A405EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBF91971-14C8-4FB0-95F9-4DB1B2A405EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBF91971-14C8-4FB0-95F9-4DB1B2A405EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
