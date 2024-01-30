@@ -14,7 +14,7 @@ internal class ScoreResultsService : BackgroundService
         _messageBuilder = new MessageBuilder();
         _scrapper = new WebScrape();
         _sender = new EmailSender();
-        _interval = new TimeSpan(0, 0, 15);
+        _interval = new TimeSpan(24, 0, 0);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stopToken)
