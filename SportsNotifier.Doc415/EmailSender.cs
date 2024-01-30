@@ -14,7 +14,7 @@ internal class EmailSender
 
     public void SendEmail(string _recipientEmail, string message)
     {
-        subject = "Weekly NBA results";
+        subject = "Daily NBA results";
         recipentEmail = _recipientEmail;
         body = message;
         var smtpClient = new SmtpClient(smtpServer)
