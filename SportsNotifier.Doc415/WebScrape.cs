@@ -15,8 +15,7 @@ internal class WebScrape
     public (string Title, List<Game> Games) GetGames()
     {
         HtmlWeb web = new();
-        string url = "https://www.basketball-reference.com/boxscores/";
-        HtmlDocument doc = web.Load(url);
+        HtmlDocument doc = web.Load(_url);
         try
         {
             var title = doc.GetElementbyId("content").SelectSingleNode("//h1").InnerText;
