@@ -5,12 +5,12 @@ namespace SportsNotifier;
 internal class EmailSender
 {
     string smtpServer = "smtp.gmail.com"; //enter your smtp server 
-    string userName = "serdar415@gmail.com";   //enter your username
-    string password = "ufzr ycxk tgmx ufdz";   //enter your password
+    string userName = "";   //enter your username
+    string password = "";   //enter your password
     string subject;
     string body;
     string recipentEmail;
-    string myEmail = "serdar415@gmail.com";    //enter your e-mail
+    string myEmail = "";    //enter your e-mail
 
     public void SendEmail(string _recipientEmail, string message)
     {
