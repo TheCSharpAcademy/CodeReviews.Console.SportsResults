@@ -9,11 +9,13 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.59" />
+    <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
