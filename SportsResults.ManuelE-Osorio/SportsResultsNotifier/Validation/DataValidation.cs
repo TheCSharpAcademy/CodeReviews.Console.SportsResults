@@ -19,8 +19,14 @@ public class DataValidation
             CultureInfo.InvariantCulture, DateTimeStyles.None, out scrappedDate);
     }
 
+    public static bool UriValidation(string? uri, out Uri? uriResult)
+    {
+        if(Uri.TryCreate(uri, UriKind.Absolute, out uriResult))
+            return true;
+        return false;
+    }
 
-    public static bool EmailValidation(string email, out MailAddress? validEmail)
+    public static bool EmailValidation(string? email, out MailAddress? validEmail)
     {
         if(MailAddress.TryCreate(email, out validEmail))
         {

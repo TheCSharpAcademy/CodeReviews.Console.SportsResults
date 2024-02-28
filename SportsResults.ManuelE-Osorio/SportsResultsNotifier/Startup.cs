@@ -10,7 +10,7 @@ namespace SportsResultsNotifier;
 
 public class StartUp
 {
-    public static void AppInit()
+    public static IHost AppInit()
     {
         MainUI.LoadingMessage();
 
@@ -20,16 +20,17 @@ public class StartUp
 
         appBuilder.ConfigureServices((host, services) =>
         {
-            var appVars = host.Configuration.GetSection("Settings").Get<AppVars>() ?? throw new Exception();
+            var appVars = host.Configuration.GetSection("Settings").Get<AppVars>() ?? 
+                throw new Exception();
             services.AddSingleton(appVars);
             services.AddScoped<EmailBuilderService>();
             services.AddScoped<WebCrawlerService>();
             services.AddScoped<DataController>();
         });
 
-        var app = appBuilder.Build();
-        var exerciseController = app.Services.CreateScope()
-            .ServiceProvider.GetRequiredService<WebCrawlerService>();
+        return appBuilder.Build();
+        // var exerciseController = app.Services.CreateScope()  // testing if load appvars correctrly
+        //     .ServiceProvider.GetRequiredService<DataController>();
     }
 
     public static void ValidateSettings()

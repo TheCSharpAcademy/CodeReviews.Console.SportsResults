@@ -8,14 +8,32 @@ using MimeKit;
 using System.Net;
 using Org.BouncyCastle.Tls;
 using MailKit.Security;
+using SportsResultsNotifier.Controllers;
+using SportsResultsNotifier.Models;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SportsResultsNotifier;
 
 public class SportsResultsNotifier
 {
-    public static void Main()
+    public static async Task Main()
     {
-        StartUp.AppInit();
+        // UpdateAppSetting(DateOnly.FromDateTime(DateTime.Today), DateOnly.FromDateTime(DateTime.Today));
+        IHost? app;
+        try
+        {
+            app = StartUp.AppInit();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Thread.Sleep(4000);
+            return;
+        }
+        var controller = app.Services.CreateScope()
+            .ServiceProvider.GetRequiredService<DataController>();
+        await controller.Crawl();
     }
 
 
@@ -27,28 +45,40 @@ public class SportsResultsNotifier
 
     //     var htmlDoc = web.Load(html);
 
-    //     var node = htmlDoc.DocumentNode.SelectSingleNode("//body/div[@id='wrap']/div[@id='content']");
+    //     var node = htmlDoc.DocumentNode.SelectNodes("//body/div[@id='wrap']/div[@id='content']"+
+    //         "/div[@class='game_summaries']/div[@class='game_summary expanded nohover ']");
 
-    //     var title = node.SelectSingleNode("//h1")
-    //         .InnerText
-    //         .Replace("NBA Games Played on ", "");
+    //     foreach(HtmlNode game in node)
+    //     {
+    //         var loserResults = game.SelectSingleNode("//table[@class='teams']/tbody/tr[@class='loser']");
+    //         var winnerResults = game.SelectSingleNode("//table[@class='teams']/tbody/tr[@class='winner']");
+    //         SportResults result = new();
+            
+    //             result.LoserTeamName = loserResults?.ChildNodes[1].InnerText;
+    //             result.LoserTeamScore = loserResults?.ChildNodes[3].InnerText;
+    //             result.WinnerTeamName = winnerResults?.ChildNodes[1].InnerText;
+    //             result.WinnerTeamScore = winnerResults?.ChildNodes[3].InnerText;
+    //     };
+        // var title = node.SelectSingleNode("//h1")
+        //     .InnerText
+        //     .Replace("NBA Games Played on ", "");
 
-    //     GetDateFromWeb(title.Replace("NBA Games Played on ", ""), out DateOnly scrappedDate);
-    //     GetDateFromConfig(out DateOnly storedDate);
+        // GetDateFromWeb(title.Replace("NBA Games Played on ", ""), out DateOnly scrappedDate);
+        // GetDateFromConfig(out DateOnly storedDate);
 
 
 
-    //     UpdateAppSetting(["LastScrappedDate", "LastRunDate"], 
-    //             [scrappedDate.ToString("yyyy/MM/dd"), DateTime.Today.ToString("yyyy/MM/dd")]);
+        // UpdateAppSetting(["LastScrappedDate", "LastRunDate"], 
+        //         [scrappedDate.ToString("yyyy/MM/dd"), DateTime.Today.ToString("yyyy/MM/dd")]);
         
           
 
-    //     var dateFromConfigBool = DateOnly.TryParseExact(title, "MMMM d, yyyy", 
-    //         CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly scrappedDateFromConfig);
+        // var dateFromConfigBool = DateOnly.TryParseExact(title, "MMMM d, yyyy", 
+        //     CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly scrappedDateFromConfig);
 
-    //     var gameSummaries = node.SelectSingleNode("//div[@class='game_summaries']");
+        // var gameSummaries = node.SelectSingleNode("//div[@class='game_summaries']");
 
-    //     //SendEmail(gameSummaries.InnerHtml);
+        //SendEmail(gameSummaries.InnerHtml);
     
     // }
 
@@ -69,16 +99,18 @@ public class SportsResultsNotifier
             CultureInfo.InvariantCulture, DateTimeStyles.None, out storedDate);
     }
 
-    public static void UpdateAppSetting(string[] keys, string[] values)
+    public static void UpdateAppSetting(DateOnly scrappedDate, DateOnly runDate)
     {
         var configJson = File.ReadAllText("appsettings.json");
-        var config = JsonSerializer.Deserialize<Dictionary<string, object>>(configJson) ?? 
+        var config = JsonSerializer.Deserialize<AppSettingsJson>(configJson) ?? 
             throw new FileNotFoundException("appsettings.json is not found, please make sure it is in the program folder.");
         
-        for (int i = 0; i< keys.Length; i++)
-        {   
-            config[keys[i]] = values[i];
+        if(config.Settings is not null)  //TestChange
+        {
+            config.Settings.LastScrappedDate = scrappedDate;
+            config.Settings.LastRunDate = runDate;
         }
+
         var updatedConfigJson = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText("appsettings.json", updatedConfigJson);
     }

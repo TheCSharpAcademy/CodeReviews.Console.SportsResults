@@ -23,8 +23,8 @@ public class MainUI
         throw new NotImplementedException();
     }
 
-    public static void InformationMessage()
+    public static void InformationMessage(string message)
     {
-        throw new NotImplementedException();
+        Console.WriteLine(message);
     }
 }

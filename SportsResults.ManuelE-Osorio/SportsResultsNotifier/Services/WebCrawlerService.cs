@@ -1,31 +1,101 @@
 using SportsResultsNotifier.Models;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Hosting;
+using HtmlAgilityPack;
+using System.Net;
+using SportsResultsNotifier.Validation;
 
 namespace SportsResultsNotifier.Services;
 
-public class WebCrawlerService(AppVars appVars)
+public class WebCrawlerService
 {
     public const string WebPageDateFormat = "MMMM d, yyyy";
-    private DateOnly LastScrappedDate = appVars.LastScrappedDate;
-    private DateOnly LastRunDate = appVars.LastRunDate;
-    public static void TestConnection()
+    public DateOnly? LastScrappedDate;
+    public DateOnly? LastRunDate;
+    private string? WebPage;
+    private HttpClient Client;  //refactor
+
+    public WebCrawlerService(AppVars appVars)
     {
-        throw new NotImplementedException();
+        LastScrappedDate = appVars.LastScrappedDate;
+        LastRunDate = appVars.LastRunDate;
+        if(!DataValidation.UriValidation(appVars.WebPage, out Uri? webPageUri))
+            throw new Exception("Invalid Web Page in appsetting.json");
+        Client = new()
+        {
+            BaseAddress = webPageUri,
+            Timeout = new TimeSpan(0, 0, 10)
+        };
+    }
+    public async Task<bool> TestConnection()
+    {      
+        HttpRequestMessage httpRequestMessage = new()
+        {
+            Method = HttpMethod.Head,
+        };
+        HttpResponseMessage response;
+        
+        try
+        {
+            response = await Client.SendAsync(httpRequestMessage);
+            if(response.StatusCode == HttpStatusCode.OK)
+                return true;
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
     }
 
-    public static void GetWebScrappedDate()
+    public async Task<DateOnly> GetWebScrappedDate()
     {
-        throw new NotImplementedException();
+        HtmlWeb web = new();
+        var htmlDoc = await web.LoadFromWebAsync(Client.BaseAddress, 
+            System.Text.Encoding.Unicode, null);
+
+        var title = htmlDoc.DocumentNode.SelectSingleNode("//body/div[@id='wrap']/div[@id='content']/h1").InnerText;
+
+        if(DataValidation.DateValidation(title.Replace("NBA Games Played on ", ""), 
+            WebPageDateFormat,out DateOnly scrappedDate))
+            return scrappedDate;
+        else
+            throw new Exception("Web page error, cannot load content");
     }
 
-    public static void GetGameSummaries()
+    public async Task<List<SportResults>> GetGameScores()
     {
-        throw new NotImplementedException();
+		var html = @"https://www.basketball-reference.com/boxscores/";
+
+        HtmlWeb web = new();
+
+        var htmlDoc = web.Load(html);
+        return await GetGameScoresFromSummary(htmlDoc.DocumentNode.SelectNodes("//body/div[@id='wrap']/div[@id='content']"+
+            "/div[@class='game_summaries']/div[@class='game_summary expanded nohover ']"));     
     }
 
-    public static void GetGameScores()
+    private static async Task<List<SportResults>> GetGameScoresFromSummary(HtmlNodeCollection gameList)
     {
-        throw new NotImplementedException();
+        List<Task<SportResults>> resultsTasks = [];
+
+        foreach (HtmlNode game in gameList)
+        {
+            resultsTasks.Add(CreateResults(game));   
+        };
+        var results = await Task.WhenAll(resultsTasks);
+        return [.. results];
+    }
+
+    private static async Task<SportResults> CreateResults(HtmlNode game)
+    {
+        var loserResults = game.SelectSingleNode("//table[@class='teams']/tbody/tr[@class='loser']"); //doesnt look node
+        var winnerResults = game.SelectSingleNode("//table[@class='teams']/tbody/tr[@class='winner']");
+        SportResults result = new();
+        
+            result.LoserTeamName = loserResults?.ChildNodes[1].InnerText;
+            result.LoserTeamScore = loserResults?.ChildNodes[3].InnerText;
+            result.WinnerTeamName = winnerResults?.ChildNodes[1].InnerText;
+            result.WinnerTeamScore = winnerResults?.ChildNodes[3].InnerText;
+        
+        return await Task.FromResult(result);
     }
 }

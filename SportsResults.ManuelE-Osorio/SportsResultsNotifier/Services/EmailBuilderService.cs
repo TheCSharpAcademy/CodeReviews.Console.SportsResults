@@ -1,20 +1,24 @@
+using System.Net.Mail;
 using SportsResultsNotifier.Models;
+using SportsResultsNotifier.Validation;
 
 namespace SportsResultsNotifier.Services;
 
 public class EmailBuilderService
 {
-    private string? SourceEmail;
+    private MailAddress? SourceEmail;
     private string? SourceEmailPassword;
-    private string? DestinationEmail;
+    private MailAddress? DestinationEmail;
 
     public EmailBuilderService(AppVars appVars)
     {
-        SourceEmail = appVars.SourceEmail;
-        SourceEmailPassword = appVars.SourceEmailPassword;
-        DestinationEmail = appVars.DestinationEmail;
+        if(DataValidation.EmailValidation(appVars.SourceEmail, out SourceEmail))
+            SourceEmailPassword = appVars.SourceEmailPassword;
+        else
+            throw new Exception($"The email {appVars.SourceEmail} from appsettings.json is invalid.");
 
-        //Fix this
+        if(!DataValidation.EmailValidation(appVars.DestinationEmail, out DestinationEmail))
+            throw new Exception($"The email {appVars.DestinationEmail} from appsettings.json is invalid.");
     }
 
     public static void SendEmail()
