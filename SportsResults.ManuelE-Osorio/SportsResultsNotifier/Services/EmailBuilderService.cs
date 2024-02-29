@@ -19,7 +19,7 @@ public class EmailBuilderService
         if(DataValidation.EmailValidation(appVars.SourceEmail, out _))
             SourceEmail = new("SourceEmail", appVars.SourceEmail);
         else
-            throw new Exception($"The email {appVars.SourceEmail} from appsettings.json is invalid.");
+            throw new Exception($"The source email {appVars.SourceEmail} from appsettings.json is invalid.");
 
         SourceEmailPassword = appVars.SourceEmailPassword;
         Host = appVars.Host;
@@ -28,7 +28,7 @@ public class EmailBuilderService
         if(DataValidation.EmailValidation(appVars.DestinationEmail, out _))
             DestinationEmail = new("DestinationEmail", appVars.DestinationEmail);
         else
-            throw new Exception($"The email {appVars.DestinationEmail} from appsettings.json is invalid.");
+            throw new Exception($"The destination email {appVars.DestinationEmail} from appsettings.json is invalid.");
     }
 
     public async Task<bool> SendEmail(DateOnly date, List<SportResults> sportResults)

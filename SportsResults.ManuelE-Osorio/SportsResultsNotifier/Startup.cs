@@ -29,12 +29,5 @@ public class StartUp
         });
 
         return appBuilder.Build();
-        // var exerciseController = app.Services.CreateScope()  // testing if load appvars correctrly
-        //     .ServiceProvider.GetRequiredService<DataController>();
-    }
-
-    public static void ValidateSettings()
-    {
-        throw new NotImplementedException();
     }
 }

@@ -31,12 +31,10 @@ public class DataValidation
         if(MailAddress.TryCreate(email, out validEmail))
         {
             if(email.Contains(' '))
-                return false;// return $"The email {email} from appsettings.json contains a blank space";
+                return false;
             else
                 return true;
-                // return null;
         }
         return false;
-        // return $"The email {email} from appsettings.json is invalid";
     }
 }
