@@ -6,6 +6,8 @@ public class AppVars
     public DateOnly? LastRunDate {get; set;}
     public string? SourceEmail {get; set;}
     public string? SourceEmailPassword {get; set;}
+    public string? Host {get; set;}
+    public int Port {get; set;}
     public string? DestinationEmail {get; set;}
     public string? WebPage {get; set;}
 }

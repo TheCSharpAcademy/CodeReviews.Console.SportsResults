@@ -4,12 +4,15 @@ public class MainUI
 {
     public static void WelcomeMessage()
     {
-        throw new NotImplementedException();
+        Console.Clear();
+        Console.WriteLine("Welcome to the Sport Results Notifier app!");
+        Thread.Sleep(3000);
     }
 
     public static void ExitMessage()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("The app is closing. \n Thank you for using the Sport Results Notifier app!");
+        Thread.Sleep(3000);
     }
 
     public static void LoadingMessage()

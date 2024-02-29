@@ -28,12 +28,12 @@ public class SportsResultsNotifier
         catch(Exception e)
         {
             Console.WriteLine(e.Message);
-            Thread.Sleep(4000);
+            Thread.Sleep(40600);
             return;
         }
         var controller = app.Services.CreateScope()
             .ServiceProvider.GetRequiredService<DataController>();
-        await controller.Crawl();
+        await controller.Start();
     }
 
 
@@ -120,7 +120,7 @@ public class SportsResultsNotifier
         var message = new MimeMessage ();
         message.From.Add (new MailboxAddress ("Manuel", "ManuelE-OsorioTesting@outlook.com"));
         message.To.Add (new MailboxAddress ("CSharpAcademy", "aux.manuel.osorio@gmail.com"));
-        message.Subject = "CSharpAcademy app progress";
+        message.Subject = "CSharpAcademy app progre6ss";
 
         message.Body = new TextPart ("html") {
             Text = $"<b>{body}</b>",
