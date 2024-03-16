@@ -4,7 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello World!");
-        Scraper.ScrapeGames("https://www.basketball-reference.com/boxscores/");
+        var gamesData = Scraper.ScrapeGames("https://www.basketball-reference.com/boxscores/");
+        EmailClient.SendEmail(gamesData);
     }
 }

@@ -13,6 +13,11 @@ internal static class Scraper
 
         var doc = web.Load(url);
 
+        var contentDiv = doc.DocumentNode.SelectSingleNode("//*[@id=\"content\"]");
+        var headerOneNode = contentDiv.SelectSingleNode(".//h1");
+        string dateTimeStr = string.Join(" ", headerOneNode.InnerText.Split(), 4, headerOneNode.InnerText.Split().Length - 4);
+        Console.WriteLine(dateTimeStr);
+
         var parentDiv = doc.DocumentNode.SelectSingleNode("//div[@class='game_summaries']");
 
         var gameSummaries = parentDiv.SelectNodes(".//div[contains(@class, 'game_summary')]");
@@ -34,7 +39,8 @@ internal static class Scraper
                 tdNodes = loserDetails.SelectNodes(".//td");
                 var losingTeam = tdNodes[0].InnerText.Trim();
                 var losingTeamPoints = int.Parse(tdNodes[1].InnerText.Trim());
-                var game = new Game { WinningTeam = winningTeam, WinningTeamPoints = winningTeamPoints, LosingTeam = losingTeam, LosingTeamPoints = losingTeamPoints }; ;
+                DateTime date = DateTime.ParseExact(dateTimeStr, "MMMM dd, yyyy", null);
+                var game = new Game { Date = date, WinningTeam = winningTeam, WinningTeamPoints = winningTeamPoints, LosingTeam = losingTeam, LosingTeamPoints = losingTeamPoints }; ;
                 games.Add(game);
             }
         }
