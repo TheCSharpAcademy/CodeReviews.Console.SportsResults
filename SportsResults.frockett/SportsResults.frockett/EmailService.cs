@@ -15,20 +15,20 @@ internal class EmailService
 
     public static void SendEmail(string emailBody)
     {
-        using MailMessage mail = new MailMessage();
-        mail.From = new MailAddress(emailFromAddress);
-        mail.To.Add(emailToAddress);
-        mail.Subject = $"{DateTime.Now.ToString("MMM dd, yyyy")} Basketball Results";
-
-        mail.Body = emailBody;
-        mail.IsBodyHtml = true;
-
-        using SmtpClient smtp = new SmtpClient(smptAddress, portNumber);
-        smtp.Credentials = new NetworkCredential(emailFromAddress, password);
-        smtp.EnableSsl = enableSSL;
-
         try
         {
+            using MailMessage mail = new MailMessage();
+            mail.From = new MailAddress(emailFromAddress);
+            mail.To.Add(emailToAddress);
+            mail.Subject = $"{DateTime.Now.ToString("MMM dd, yyyy")} Basketball Results";
+
+            mail.Body = emailBody;
+            mail.IsBodyHtml = true;
+
+            using SmtpClient smtp = new SmtpClient(smptAddress, portNumber);
+            smtp.Credentials = new NetworkCredential(emailFromAddress, password);
+            smtp.EnableSsl = enableSSL;
+ 
             smtp.Send(mail);
         }
         catch (Exception ex)

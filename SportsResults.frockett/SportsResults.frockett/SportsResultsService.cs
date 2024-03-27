@@ -4,19 +4,17 @@ namespace SportsResults.frockett;
 
 internal class SportsResultsService : BackgroundService
 {
-    private readonly EmailService emailService;
     private readonly ScraperService scraperService;
 
-    public SportsResultsService(EmailService emailService, ScraperService scraperService)
+    public SportsResultsService(ScraperService scraperService)
     {
-        this.emailService = emailService;
         this.scraperService = scraperService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         DateTime startTime = DateTime.Now;
-        DateTime sendTime = new DateTime(startTime.Year, startTime.Month, startTime.Day, 16, 15, 0);
+        DateTime sendTime = new DateTime(startTime.Year, startTime.Month, startTime.Day, 16, 27, 0);
         if (startTime > sendTime)
         {
             sendTime = sendTime.AddDays(1);
