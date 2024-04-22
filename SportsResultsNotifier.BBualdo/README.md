@@ -1,0 +1,1 @@
+To make **Email Sender** work you have to go to **App.config** file and replace secrets with your credentials data.
