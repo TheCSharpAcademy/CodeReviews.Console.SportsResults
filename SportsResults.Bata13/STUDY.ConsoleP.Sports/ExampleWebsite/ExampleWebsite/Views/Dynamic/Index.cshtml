@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Dynamic Page";
+}
+
+@section Scripts{
+    <script>
+        var index = 0;
+        function updateTable() {
+            $.getJSON('dynamic/test?index='+index, function (obj) {
+                console.log(obj);
+                index = obj.index;
+                if(obj.hasNext)
+                    $('#next').removeClass('disabled');
+                else
+                    $('#next').addClass('disabled');
+
+                if(obj.hasPrevious)
+                    $('#prev').removeClass('disabled');
+                else
+                    $('#prev').addClass('disabled');
+
+                $('table').find("tr:gt(0)").remove();
+                for (var u of obj.users) {
+                    $('table tr:last').after('<tr><td>'+u.firstname+'</td><td>'+u.lastname+'</td><td>'+u.age+'</td></tr>');
+                }
+            });
+        }
+        $('#next').on('click', function () { index++; updateTable(); })
+        $('#prev').on('click', function () { index--; updateTable(); })
+        updateTable();
+    </script>
+}
+
+<div class="text-center">
+    <a style="cursor: pointer;"
+       class="btn btn-default" id="prev">
+        Previous
+    </a>
+    <a style="cursor: pointer;"
+       class="btn btn-default" id="next">
+        Next
+    </a>
+
+    <table style="width:100%">
+        <tbody>
+            <tr>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Age</th>
+            </tr>
+        </tbody>
+    </table>
+</div>
