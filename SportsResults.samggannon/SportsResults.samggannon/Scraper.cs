@@ -16,4 +16,10 @@ public class Scraper
         Console.WriteLine(description);
         Console.ReadLine();
     }
+
+    public static void ScrapeScores()
+    {
+        HtmlWeb web = new HtmlWeb();
+        HtmlDocument document = web.Load("https://www.basketball-reference.com/boxscores/");
+    }
 }
