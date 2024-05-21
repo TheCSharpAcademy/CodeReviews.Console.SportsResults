@@ -1,3 +1,3 @@
 ﻿using SportsResults.samggannon;
 
-Scraper.Crawl();
+Scraper.ScrapeScores();

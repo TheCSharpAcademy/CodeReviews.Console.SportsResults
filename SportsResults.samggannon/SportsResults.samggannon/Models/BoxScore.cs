@@ -1,6 +1,6 @@
 ﻿namespace SportsResults.samggannon.Models;
 
-internal class BoxScore
+public class BoxScore
 {
     public string Winner { get; set; }
     public string Loser { get; set; }
