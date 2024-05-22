@@ -26,11 +26,22 @@ internal class EmailClient
         _EnableSSL = true;
     }
 
-    public static void SendEmail()
+    public void SendEmail()
     {
         using (MailMessage mail = new MailMessage())
         {
-            mail.From = new MailAddress(email)
+            mail.From = new MailAddress(_FromAddress);
+            mail.To.Add(new MailAddress(_ToAddress));
+            mail.Subject = _Subject;
+            mail.Body = _Body;
+            mail.IsBodyHtml = true;
+
+            using (SmtpClient smtp = new SmtpClient(_SmtpAddress, _SmtpPort))
+            {
+                smtp.Credentials = new NetworkCredential(_FromAddress, _SmtpPassword);
+                smtp.EnableSsl = _EnableSSL;
+                smtp.Send(mail);
+            }
         }
     }
 
