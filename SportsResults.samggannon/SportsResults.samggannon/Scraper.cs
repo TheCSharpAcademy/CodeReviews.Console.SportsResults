@@ -34,8 +34,8 @@ public class Scraper
                 {
                     Winner = node.SelectSingleNode(".//table/tbody/tr[1]/td[1]").InnerText,
                     Loser = node.SelectSingleNode(".//table/tbody/tr[2]/td[1]").InnerText,
-                    WinningScore = Int32.Parse(node.SelectSingleNode(".//table/tbody/tr[1]/td[2]").InnerText),
-                    LosingScore = Int32.Parse(node.SelectSingleNode(".//table/tbody/tr[2]/td[2]").InnerText),
+                    WinningScore = node.SelectSingleNode(".//table/tbody/tr[1]/td[2]").InnerText,
+                    LosingScore = node.SelectSingleNode(".//table/tbody/tr[2]/td[2]").InnerText,
                 });
         }
 
