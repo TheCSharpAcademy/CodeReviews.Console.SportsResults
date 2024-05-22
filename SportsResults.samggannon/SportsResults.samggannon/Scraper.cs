@@ -7,7 +7,7 @@ public class Scraper
 {
     public static void Scrape()
     {
-        HtmlWeb web = new HtmlWeb();
+        HtmlWeb web = new();
         HtmlDocument document = web.Load("https://example.com");
 
         var title = document.DocumentNode.SelectNodes("//div/h1").First().InnerHtml;
@@ -20,9 +20,9 @@ public class Scraper
 
     public static List<BoxScore> ScrapeScores()
     {
-        List<BoxScore> scores = new List<BoxScore>();
+        List<BoxScore> scores = new();
 
-        HtmlWeb web = new HtmlWeb();
+        HtmlWeb web = new();
         HtmlDocument document = web.Load("https://www.basketball-reference.com/boxscores/");
 
         var gameSummaries = document.DocumentNode.SelectNodes("//div[@class='game_summary expanded nohover ']").ToList();
@@ -32,13 +32,26 @@ public class Scraper
             scores.Add(
                 new BoxScore
                 {
-                    Winner = node.SelectSingleNode(".//table/tbody/tr[1]/td[1]").InnerText,
-                    Loser = node.SelectSingleNode(".//table/tbody/tr[2]/td[1]").InnerText,
-                    WinningScore = node.SelectSingleNode(".//table/tbody/tr[1]/td[2]").InnerText,
-                    LosingScore = node.SelectSingleNode(".//table/tbody/tr[2]/td[2]").InnerText,
+                    AwayTeam = node.SelectSingleNode(".//table/tbody/tr[1]/td[1]").InnerText,
+                    HomeTeam = node.SelectSingleNode(".//table/tbody/tr[2]/td[1]").InnerText,
+                    AwayScore = node.SelectSingleNode(".//table/tbody/tr[1]/td[2]").InnerText,
+                    HomeScore = node.SelectSingleNode(".//table/tbody/tr[2]/td[2]").InnerText,
                 });
         }
 
         return scores;
+    }
+
+    public static Stock GetStockPrice()
+    {
+        Stock stock = new();
+
+        HtmlWeb web = new();
+        HtmlDocument document = web.Load("https://finance.yahoo.com/quote/AAPL/");
+
+        stock.Ticker = document.DocumentNode.SelectNodes("//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[1]/div/section/h1").FirstOrDefault().InnerText;
+        stock.Price = document.DocumentNode.SelectSingleNode("//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span").InnerText;
+
+        return stock;
     }
 }
