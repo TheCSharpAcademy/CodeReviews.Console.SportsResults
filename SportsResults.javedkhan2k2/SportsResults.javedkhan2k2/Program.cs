@@ -1,21 +1,37 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Phonebook.Services;
 using SportsResult;
+using SportsResults;
 
-var builder = new ConfigurationBuilder()
-    .AddUserSecrets<Program>();
-var configuration = builder.Build();
+internal class Program
+{
+    static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
 
-var senderEmail = configuration["SenderEmail"];
-var senderPassword = configuration["SenderPassword"];
-var smtpHost = configuration["SmtpHost"];
-var smtpPort = Convert.ToInt32(configuration["SmtpPort"]);
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.AddUserSecrets<Program>();
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.Configure<EmailSettings>(hostContext.Configuration.GetSection("EmailSettings"));
+                    services.AddHostedService<SportsResultsBackgroundService>();
+                    services.AddSingleton<Scrapper>();
+                    services.AddSingleton<EmailService>();
+                })
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                });
 
-var emailService = new EmailService(senderEmail, senderPassword, smtpHost, smtpPort);
-
-Scrapper scrapper = new Scrapper();
-scrapper.ScrapeMatchData();
-
-var emailBody = scrapper.GetTeamScoresAsHtml();
-await emailService.SendEmailAsHtml(scrapper.MatchDate, emailBody, "javedkhan2k2@gmail.com");
+}

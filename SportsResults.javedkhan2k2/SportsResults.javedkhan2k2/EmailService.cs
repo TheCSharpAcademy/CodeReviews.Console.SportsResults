@@ -1,34 +1,48 @@
 using System.Net;
 using System.Net.Mail;
+using Microsoft.Extensions.Options;
+using SportsResults;
 
 namespace Phonebook.Services;
 
-internal class EmailService
+public class EmailService
 {
-    private string _senderEmail;
-    private string _senderPassword;
-    private string _smtpHost;
-    private int _smtpPort;
+    private readonly EmailSettings _emailSettings;
 
-    public EmailService(string senderEmail, string senderPassword, string smtpHost, int smtpPort)
+    public EmailService(IOptions<EmailSettings> emailSettings)
     {
-        _senderEmail = senderEmail;
-        _senderPassword = senderPassword;
-        _smtpHost = smtpHost;
-        _smtpPort = smtpPort;
+        _emailSettings = emailSettings.Value;
+        ValidateEmailSetting();
     }
 
-    internal void SendEmailAsPlainText(string subject, string body, string recipientEmail)
+    private void ValidateEmailSetting()
     {
-        MailMessage mail = new MailMessage(_senderEmail, recipientEmail)
+        if(string.IsNullOrEmpty(_emailSettings.RecipientEmail) 
+            || string.IsNullOrEmpty(_emailSettings.SenderEmail)
+            || string.IsNullOrEmpty(_emailSettings.SenderPassword)
+            || string.IsNullOrEmpty(_emailSettings.SmtpHost))
+        {
+            throw new ArgumentException(@"-------------
+            Please set the below to run the app:
+            dotnet user-secrets set EmailSettings:SenderEmail your-email@example.com
+            dotnet user-secrets set EmailSettings:SenderPassword your-password
+            dotnet user-secrets set EmailSettings:RecipientEmail recipient-email@example.com
+            dotnet user-secrets set EmailSettings:SmtpHost smtp.example.com
+            dotnet user-secrets set EmailSettings:SmtpPort 587 ");
+        }
+    }
+
+    public void SendEmailAsPlainText(string subject, string body)
+    {
+        MailMessage mail = new MailMessage(_emailSettings.SenderEmail, _emailSettings.RecipientEmail)
         {
             Subject = subject,
             Body = body,
         };
 
-        SmtpClient smtpClient = new SmtpClient(_smtpHost, _smtpPort)
+        SmtpClient smtpClient = new SmtpClient(_emailSettings.SmtpHost, _emailSettings.SmtpPort)
         {
-            Credentials = new System.Net.NetworkCredential(_senderEmail, _senderPassword),
+            Credentials = new System.Net.NetworkCredential(_emailSettings.SenderEmail, _emailSettings.SenderPassword),
             EnableSsl = true,
         };
 
@@ -44,21 +58,21 @@ internal class EmailService
 
     }
 
-    internal async Task SendEmailAsHtml(string subject, string htmlBody, string recipientEmail)
+    public async Task SendEmailAsHtml(string subject, string htmlBody)
     {
         using (var message = new MailMessage())
         {
-            message.From = new MailAddress(_senderEmail);
-            message.To.Add(new MailAddress(recipientEmail));
+            message.From = new MailAddress(_emailSettings.SenderEmail);
+            message.To.Add(new MailAddress(_emailSettings.RecipientEmail));
             message.Subject = subject;
             message.Body = htmlBody;
             message.IsBodyHtml = true;
 
             try
             {
-                using (var client = new SmtpClient(_smtpHost, _smtpPort))
+                using (var client = new SmtpClient(_emailSettings.SmtpHost, _emailSettings.SmtpPort))
                 {
-                    client.Credentials = new NetworkCredential(_senderEmail, _senderPassword);
+                    client.Credentials = new NetworkCredential(_emailSettings.SenderEmail, _emailSettings.SenderPassword);
                     client.EnableSsl = true;
     
                     await client.SendMailAsync(message);

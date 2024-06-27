@@ -19,12 +19,13 @@ public class Scrapper
     public Scrapper()
     {
         _matchScore = new MatchScore();
-        HtmlWeb web = new HtmlWeb();
-        _doc = web.Load(_urlLink);
+        
     }
 
     public void ScrapeMatchData()
     {
+        HtmlWeb web = new HtmlWeb();
+        _doc = web.Load($"{_urlLink}");
         UpdateTeamInfo();
 
         var firstTeam = _doc.DocumentNode.SelectSingleNode("//*[@id=\"content\"]/div[3]/div/table[1]/tbody/tr[1]");
