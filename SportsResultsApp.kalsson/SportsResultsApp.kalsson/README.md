@@ -6,15 +6,18 @@
 - **Introduction**: Provides a brief overview of the project.
 - **Requirements**: Lists the software and tools required to run the project.
 - **Libraries Used**: Lists the NuGet packages used in the project.
-- **Getting Started**: Step-by-step instructions for cloning the repository, installing dependencies, configuring the application, and running it.
+- **Getting Started**: Step-by-step instructions for cloning the repository, installing dependencies, configuring the 
+application, and running it.
 - **How It Works**: Explains the core functionality of the project.
 
-This README should provide clear and concise documentation for anyone who wants to understand, use, or contribute to your project.
+This README should provide clear and concise documentation for anyone who wants to understand or use this project.
 
 
 ## Introduction
 
-Sports Results Notifier is a C# console application built with .NET 8 that scrapes sports data from a non-API source and sends it to a specific email address. This project demonstrates the ability to harvest data from websites and send emails programmatically.
+The Sports Results Notifier is a C# console application that scrapes basketball game data from the Basketball Reference 
+website and sends the results to a specified email address. The application is designed to run as a background service 
+that automatically performs these tasks daily.
 
 ## Requirements
 
