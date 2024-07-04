@@ -1,25 +1,30 @@
-﻿using SportsResultsApp.kalsson.Services;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SportsResultsApp.kalsson;
+using SportsResultsApp.kalsson.Services;
 
-try
-{
-    Console.WriteLine("Scraping basketball game data...");
-    var scraper = new DataScraper();
-    var games = await scraper.ScrapeBasketballGamesAsync();
-
-    if (games.Count == 0)
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((hostContext, services) =>
     {
-        Console.WriteLine("No games found.");
-        return;
-    }
+        services.AddHttpClient();
+        services.AddSingleton<DataScraper>();
+        services.AddSingleton<EmailSender>(provider =>
+        {
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            return new EmailSender(
+                smtpServer: configuration["Email:SmtpServer"],
+                smtpPort: int.Parse(configuration["Email:SmtpPort"]),
+                senderEmail: configuration["Email:SenderEmail"],
+                senderPassword: configuration["Email:SenderPassword"],
+                recipientEmail: configuration["Email:RecipientEmail"]);
+        });
+        services.AddHostedService<ScoreResultsService>();
+    })
+    .ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    })
+    .Build();
 
-    Console.WriteLine($"Found {games.Count} game(s).");
-
-    Console.WriteLine("Sending email...");
-    var emailSender = new EmailSender();
-    await emailSender.SendEmailAsync(games);
-    Console.WriteLine("Email sent successfully.");
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"An error occurred: {ex.Message}");
-}
+await host.RunAsync();

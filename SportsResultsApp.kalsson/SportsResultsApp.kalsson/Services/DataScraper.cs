@@ -7,10 +7,6 @@ public class DataScraper
 {
     private const string Url = "https://www.basketball-reference.com/boxscores/";
 
-    /// <summary>
-    /// Scrapes basketball game data from the provided URL.
-    /// </summary>
-    /// <returns>A list of BasketballGameModel objects representing the scraped game data.</returns>
     public async Task<List<BasketballGameModel>> ScrapeBasketballGamesAsync()
     {
         var httpClient = new HttpClient();
@@ -21,22 +17,11 @@ public class DataScraper
 
         var games = new List<BasketballGameModel>();
 
-        // Print the loaded HTML content for debugging
-        Console.WriteLine("Loaded HTML:");
-        Console.WriteLine(html.Substring(0,
-            Math.Min(html.Length, 1000))); // Print the first 1000 characters of the HTML
-
-        // Locate the section containing the game data
         var gameNodes = htmlDocument.DocumentNode.SelectNodes("//div[contains(@class, 'game_summary')]");
         if (gameNodes != null)
         {
-            Console.WriteLine($"Found {gameNodes.Count} game(s).");
-
             foreach (var gameNode in gameNodes)
             {
-                Console.WriteLine(
-                    $"Game node HTML: {gameNode.InnerHtml.Substring(0, Math.Min(gameNode.InnerHtml.Length, 500))}");
-
                 var winnerNode = gameNode.SelectSingleNode(".//table/tbody/tr[1]");
                 var loserNode = gameNode.SelectSingleNode(".//table/tbody/tr[2]");
 
@@ -55,19 +40,9 @@ public class DataScraper
                         Team2Score = team2Score
                     };
 
-                    Console.WriteLine($"Game: {game}");
-
                     games.Add(game);
                 }
-                else
-                {
-                    Console.WriteLine("Error parsing game data: winnerNode or loserNode is null.");
-                }
             }
-        }
-        else
-        {
-            Console.WriteLine("No game summaries found using the specified XPath.");
         }
 
         return games;
