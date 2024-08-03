@@ -4,18 +4,15 @@ namespace SportsResults.kwm0304.Services;
 
 public class ScraperService
 {
-  
-  public static string Scrape()
+  public string Scrape()
   {
     string games = "";
     HtmlWeb web = new();
     HtmlDocument document = web.Load("https://www.basketball-reference.com/boxscores/");
     var gameSummariesDiv = document.DocumentNode.SelectSingleNode("//div[@class='game_summaries']");
-
     if (gameSummariesDiv != null)
     {
       var gameSummaries = gameSummariesDiv.SelectNodes(".//div[@class='game_summary expanded nohover ']");
-
       if (gameSummaries != null)
       {
         foreach (var gameSummary in gameSummaries)
@@ -25,7 +22,6 @@ public class ScraperService
           {
             var loserCity = loserRow.SelectSingleNode(".//a").InnerText;
             var loserScore = loserRow.SelectSingleNode(".//td[@class='right']").InnerText;
-
             string losingLine = loserCity.ToString() + " " + loserScore.ToString();
             games += losingLine + "\n";
           }
@@ -42,7 +38,6 @@ public class ScraperService
             games += winningLine + "\n\n";
             Console.WriteLine($"Winner: {winnerCity}, Score: {winnerScore}");
           }
-          
         }
       }
       else
