@@ -11,7 +11,6 @@ public class EmailService : IJob
 
   public EmailService(ScraperService scraperService)
   {
-    
     _scraperService = scraperService;
   }
 
@@ -22,13 +21,12 @@ public class EmailService : IJob
 
   private async Task CreateAndSendMessage()
   {
-    var server = Environment.GetEnvironmentVariable("Server");
+    var server = Environment.GetEnvironmentVariable("SERVER");
     var port = Environment.GetEnvironmentVariable("PORT");
-    int portNum = int.Parse(port!);
     var from = Environment.GetEnvironmentVariable("EMAIL_FROM");
     var fromPassword = Environment.GetEnvironmentVariable("EMAIL_FROM_PASSWORD");
     var to = Environment.GetEnvironmentVariable("EMAIL_TO");
-
+    int portNumber = int.Parse(port!);
     var message = new MimeMessage();
     message.From.Add(new MailboxAddress("", from));
     message.To.Add(new MailboxAddress("", to));
@@ -41,7 +39,7 @@ public class EmailService : IJob
     using var client = new SmtpClient();
     try
     {
-      await client.ConnectAsync(server, portNum, MailKit.Security.SecureSocketOptions.StartTls);
+      await client.ConnectAsync(server, portNumber, MailKit.Security.SecureSocketOptions.StartTls);
       await client.AuthenticateAsync(from, fromPassword);
       await client.SendAsync(message);
       await client.DisconnectAsync(true);
