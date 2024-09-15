@@ -15,15 +15,22 @@ public class Scraper
         List<Result> results = new List<Result>();
         var gameResults = htmlDoc.DocumentNode.SelectNodes("//div[@class='game_summary expanded nohover ']");
 
-        foreach( var gameResult in gameResults )
+        if(gameResults.Count > 0 )
         {
-            results.Add(new Result
+            foreach (var gameResult in gameResults)
             {
-                winner = gameResult.SelectSingleNode(".//table/tbody/tr[2]/td[1]").InnerText,
-                winnerScore = gameResult.SelectSingleNode("//table/tbody/tr[2]/td[2]").InnerText,
-                loser = gameResult.SelectSingleNode("//table/tbody/tr[1]/td[1]").InnerText,
-                loserScore = gameResult.SelectSingleNode("//table/tbody/tr[1]/td[2]").InnerText
-            });
+                results.Add(new Result
+                {
+                    winner = gameResult.SelectSingleNode(".//table/tbody/tr[2]/td[1]").InnerText,
+                    winnerScore = gameResult.SelectSingleNode("//table/tbody/tr[2]/td[2]").InnerText,
+                    loser = gameResult.SelectSingleNode("//table/tbody/tr[1]/td[1]").InnerText,
+                    loserScore = gameResult.SelectSingleNode("//table/tbody/tr[1]/td[2]").InnerText
+                });
+            }
+        }
+        else
+        {
+            return null;
         }
         return results;
     }
