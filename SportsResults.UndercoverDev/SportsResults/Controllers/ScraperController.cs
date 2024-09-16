@@ -20,7 +20,7 @@ public class ScraperController
         try
         {
             var data = await _scraperService.ScrapeSportsDataAsync();
-            await _emailService.SendEmailAsync(data);
+            await _emailService.SendSportsDataEmailAsync(data);
         }
         catch (Exception ex)
         {
