@@ -5,9 +5,9 @@ namespace SportsResults.Services
     public class WorkerService : BackgroundService
     {
         private readonly ScraperController _scraperController;
-        private readonly ILogger<Startup> _logger;
+        private readonly ILogger<WorkerService> _logger;
 
-        public WorkerService(ScraperController scraperController, ILogger<Startup> logger)
+        public WorkerService(ScraperController scraperController, ILogger<WorkerService> logger)
         {
             _scraperController = scraperController;
             _logger = logger;
