@@ -10,11 +10,10 @@ public class ConfigReader
         _configuration = configuration;
     }
 
-    public string GetWebsiteUrl()
+    public string? GetWebsiteUrl()
     {
         return _configuration["Scraping:WebsiteUrl"];
     }
-
     public EmailSettings GetEmailSettings()
     {
         return new EmailSettings

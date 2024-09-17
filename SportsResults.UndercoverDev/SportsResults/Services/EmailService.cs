@@ -21,7 +21,7 @@ public class EmailService
 
         using var smtpClient = new SmtpClient(emailSettings.SmtpServer, emailSettings.SmtpPort)
         {
-            Credentials = new NetworkCredential(emailSettings.Username, emailSettings.Password),
+            Credentials = new NetworkCredential(emailSettings.FromAddress, emailSettings.Password),
             EnableSsl = true
         };
 
@@ -41,9 +41,7 @@ public class EmailService
 
         foreach (var sportData in data)
         {
-            sb.AppendLine($"Sport: {sportData.Winner} vs. {sportData.Loser}");
-            sb.AppendLine($"Winner Score: {sportData.WinnerScore}");
-            sb.AppendLine($"Loser Score: {sportData.LoserScore}");
+            sb.AppendLine($"Sport: {sportData.Winner} ({sportData.WinnerScore}) vs. {sportData.Loser} ({sportData.LoserScore})");
             sb.AppendLine();
         }
 

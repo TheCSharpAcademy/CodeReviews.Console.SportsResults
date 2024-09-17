@@ -19,6 +19,8 @@ public class HtmlParser
                 WinnerScore = int.Parse(node.SelectSingleNode("tr[@class='winner']/td[2]").InnerText),
                 LoserScore = int.Parse(node.SelectSingleNode("tr[@class='loser']/td[2]").InnerText)
             };
+
+            dataList.Add(sportData);
         }
 
         return dataList;
