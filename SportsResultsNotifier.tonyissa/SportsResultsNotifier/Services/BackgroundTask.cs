@@ -25,7 +25,7 @@ public class BackgroundTask : BackgroundService
             {
                 _logger.LogInformation("Daily task started at: {time}", DateTimeOffset.Now);
 
-                await _scraperService.ExecuteScrapeAsync(stoppingToken);
+                await Run(stoppingToken);
 
                 _logger.LogInformation("Daily task completed at: {time}", DateTimeOffset.Now);
             }
@@ -38,5 +38,17 @@ public class BackgroundTask : BackgroundService
         }
 
         _logger.LogInformation("Scraping service is stopping.");
+    }
+
+    private async Task Run(CancellationToken stoppingToken)
+    {
+        try
+        {
+            var scoreList = await _scraperService.ExecuteScrapeAsync(stoppingToken);
+        }
+        catch
+        {
+            return;
+        }
     }
 }

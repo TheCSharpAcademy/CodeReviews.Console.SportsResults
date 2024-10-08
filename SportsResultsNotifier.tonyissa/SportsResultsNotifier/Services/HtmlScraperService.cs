@@ -1,7 +1,5 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
-using System;
-using static System.Net.WebRequestMethods;
 
 namespace SportsResultsNotifier.Services;
 
@@ -15,7 +13,7 @@ public class HtmlScraperService
         _logger = logger;
     }
 
-    public async Task<HtmlDocument?> FetchHtml(CancellationToken stoppingToken)
+    public async Task<HtmlDocument> FetchHtml(CancellationToken stoppingToken)
     {
         int maxRetries = 3;
         int delay = 2000;
@@ -30,51 +28,68 @@ public class HtmlScraperService
                     var doc = await web.LoadFromWebAsync(_url, stoppingToken);
                     return doc;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    if (attempt == maxRetries) throw;
+                    if (attempt == maxRetries) { throw; }
 
-                    _logger.LogError(ex, "Failed to scrape HTML. Attempt {attempt} of {maxRetries}.", attempt, maxRetries);
+                    _logger.LogError("Failed to scrape HTML. Attempt {attempt} of {maxRetries}.", attempt, maxRetries);
                     await Task.Delay(delay, stoppingToken);
                 }
             }
             catch (HttpRequestException httpEx)
             {
-                _logger.LogError(httpEx, "HttpRequestException: Unable to fetch URL {url}. Reason: {httpEx.Message}", 
+                _logger.LogError(httpEx, "HttpRequestException: Unable to fetch URL {url}. Reason: {message}", 
                     _url, httpEx.Message);
-                break;
+                throw;
             }
             catch (TaskCanceledException canceledEx)
             {
                 _logger.LogError(canceledEx, "TaskCanceledException: Request to {url} timed out. Reason: {message}", 
                     _url, canceledEx.Message);
-                break;
-            }
-            catch (HtmlWebException htmlWebEx)
-            {
-                _logger.LogError(htmlWebEx, "HtmlWebException: Error loading HTML from {url}. Reason: {message}", 
-                    _url, htmlWebEx.Message);
-                break;
-            }
-            catch (InvalidOperationException invalidOpEx)
-            {
-                _logger.LogError(invalidOpEx, "InvalidOperationException: Invalid operation while processing {url}. Reason: {message}",
-                    _url, invalidOpEx.Message);
-                break;
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception: An unexpected error occurred while fetching URL {url}. Reason: {ex.Message}",
+                _logger.LogError(ex, "Exception: An unexpected error occurred while fetching URL {url}. Reason: {message}",
                     _url, ex.Message);
-                break;
+                throw;
             }
         }
 
-        return null;
+        throw new NotSupportedException();
     }
 
-    public async Task ExecuteScrapeAsync(CancellationToken stoppingToken)
+    public List<List<string>> ParseHtml(HtmlDocument doc)
+    {
+        var tableEast = doc.DocumentNode.SelectNodes("//*[@id=\"confs_standings_E\"]/tbody/tr");
+        var tableWest = doc.DocumentNode.SelectNodes("//*[@id=\"confs_standings_W\"]/tbody/tr");
+
+        var listEast = ParseTableToStringList(tableEast);
+        var listWest = ParseTableToStringList(tableWest);
+
+        return [listEast, listWest];
+    }
+
+    public List<string> ParseTableToStringList(HtmlNodeCollection table)
+    {
+        var list = new List<string>();
+
+        foreach (var row in table)
+        {
+            var teamName = row.SelectSingleNode("td[1]");
+            var wins = row.SelectSingleNode("td[2]");
+            var losses = row.SelectSingleNode("td[3]");
+
+            list.Add($"Team: {teamName} Wins: {wins} Losses: {losses}");
+        }
+
+        return list;
+    }
+
+    public async Task<List<List<string>>> ExecuteScrapeAsync(CancellationToken stoppingToken)
     {
         var doc = await FetchHtml(stoppingToken);
+
+        return ParseHtml(doc);
     }
 }
