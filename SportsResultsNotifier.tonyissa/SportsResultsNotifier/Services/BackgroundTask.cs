@@ -3,13 +3,15 @@ using Microsoft.Extensions.Logging;
 
 namespace SportsResultsNotifier.Services;
 
-public class ScrapingService : BackgroundService
+public class BackgroundTask : BackgroundService
 {
-    private readonly ILogger<ScrapingService> _logger;
+    private readonly HtmlScraperService _scraperService;
+    private readonly ILogger<BackgroundTask> _logger;
     private readonly TimeSpan _interval = TimeSpan.FromHours(24);
 
-    public ScrapingService(ILogger<ScrapingService> logger)
+    public BackgroundTask(HtmlScraperService scraperService, ILogger<BackgroundTask> logger)
     {
+        _scraperService = scraperService;
         _logger = logger;
     }
 
@@ -17,29 +19,24 @@ public class ScrapingService : BackgroundService
     {
         _logger.LogInformation("Scraping service is starting.");
 
-        while (stoppingToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
                 _logger.LogInformation("Daily task started at: {time}", DateTimeOffset.Now);
 
-                await DoSomething(stoppingToken);
+                await _scraperService.ExecuteScrapeAsync(stoppingToken);
 
                 _logger.LogInformation("Daily task completed at: {time}", DateTimeOffset.Now);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error has occured");
+                _logger.LogError(ex, "An error has occured at {time}. Error: {message}", DateTimeOffset.Now, ex.Message);
             }
 
             await Task.Delay(_interval, stoppingToken);
         }
 
         _logger.LogInformation("Scraping service is stopping.");
-    }
-
-    private async Task DoSomething(CancellationToken stoppingToken)
-    {
-
     }
 }

@@ -5,7 +5,8 @@ using Microsoft.Extensions.Logging;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddTransient<ScrapingService>();
+builder.Services.AddHostedService<BackgroundTask>();
+builder.Services.AddTransient<HtmlScraperService>();
 builder.Services.AddLogging(logger =>
 {
     logger.ClearProviders();
@@ -14,4 +15,4 @@ builder.Services.AddLogging(logger =>
 
 var app = builder.Build();
 
-app.Run();
+await app.RunAsync();
