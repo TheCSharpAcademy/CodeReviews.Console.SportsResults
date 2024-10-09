@@ -6,12 +6,14 @@ namespace SportsResultsNotifier.Services;
 public class BackgroundTask : BackgroundService
 {
     private readonly HtmlScraperService _scraperService;
+    private readonly MailService _mailService;
     private readonly ILogger<BackgroundTask> _logger;
     private readonly TimeSpan _interval = TimeSpan.FromHours(24);
 
-    public BackgroundTask(HtmlScraperService scraperService, ILogger<BackgroundTask> logger)
+    public BackgroundTask(HtmlScraperService scraperService, MailService mailService, ILogger<BackgroundTask> logger)
     {
         _scraperService = scraperService;
+        _mailService = mailService;
         _logger = logger;
     }
 

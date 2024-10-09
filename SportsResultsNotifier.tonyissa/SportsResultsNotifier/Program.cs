@@ -7,6 +7,7 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddHostedService<BackgroundTask>();
 builder.Services.AddTransient<HtmlScraperService>();
+builder.Services.AddTransient<MailService>();
 builder.Services.AddLogging(logger =>
 {
     logger.ClearProviders();
