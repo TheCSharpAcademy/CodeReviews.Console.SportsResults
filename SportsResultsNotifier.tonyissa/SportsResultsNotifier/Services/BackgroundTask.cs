@@ -31,9 +31,9 @@ public class BackgroundTask : BackgroundService
 
                 _logger.LogInformation("Daily task completed at: {time}", DateTimeOffset.Now);
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogError(ex, "An error has occured at {time}. Error: {message}", DateTimeOffset.Now, ex.Message);
+                _logger.LogError("An error has occured at {time}.", DateTimeOffset.Now);
             }
 
             await Task.Delay(_interval, stoppingToken);
@@ -44,13 +44,7 @@ public class BackgroundTask : BackgroundService
 
     private async Task Run(CancellationToken stoppingToken)
     {
-        try
-        {
-            var scoreList = await _scraperService.ExecuteScrapeAsync(stoppingToken);
-        }
-        catch
-        {
-            return;
-        }
+        var scoreList = await _scraperService.ExecuteScrapeAsync(stoppingToken);
+        _mailService.SendSportsUpdateAsync(scoreList);
     }
 }

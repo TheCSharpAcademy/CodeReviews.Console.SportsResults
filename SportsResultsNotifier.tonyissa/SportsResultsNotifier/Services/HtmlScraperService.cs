@@ -38,20 +38,17 @@ public class HtmlScraperService
             }
             catch (HttpRequestException httpEx)
             {
-                _logger.LogError(httpEx, "HttpRequestException: Unable to fetch URL {url}. Reason: {message}", 
-                    _url, httpEx.Message);
+                _logger.LogError(httpEx, "HttpRequestException: Unable to fetch URL {url}.", _url);
                 throw;
             }
             catch (TaskCanceledException canceledEx)
             {
-                _logger.LogError(canceledEx, "TaskCanceledException: Request to {url} timed out. Reason: {message}", 
-                    _url, canceledEx.Message);
+                _logger.LogError(canceledEx, "TaskCanceledException: Request to {url} timed out.", _url);
                 throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception: An unexpected error occurred while fetching URL {url}. Reason: {message}",
-                    _url, ex.Message);
+                _logger.LogError(ex, "");
                 throw;
             }
         }
@@ -76,9 +73,9 @@ public class HtmlScraperService
 
         foreach (var row in table)
         {
-            var teamName = row.SelectSingleNode("td[1]");
-            var wins = row.SelectSingleNode("td[2]");
-            var losses = row.SelectSingleNode("td[3]");
+            var teamName = row.SelectSingleNode("th[1]").InnerText;
+            var wins = row.SelectSingleNode("td[1]").InnerText;
+            var losses = row.SelectSingleNode("td[2]").InnerText;
 
             list.Add($"Team: {teamName} Wins: {wins} Losses: {losses}");
         }
