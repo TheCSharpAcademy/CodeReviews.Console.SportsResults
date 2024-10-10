@@ -17,6 +17,7 @@ public class HtmlScraperService
     {
         int maxRetries = 3;
         int delay = 2000;
+        var web = new HtmlWeb();
 
         for (int attempt = 1; attempt <= maxRetries; attempt++)
         {
@@ -24,7 +25,6 @@ public class HtmlScraperService
             {   
                 try
                 {
-                    var web = new HtmlWeb();
                     var doc = await web.LoadFromWebAsync(_url, stoppingToken);
                     return doc;
                 }

@@ -93,7 +93,7 @@ public class MailService
         }
     }
 
-    public void SendSportsUpdateAsync(List<List<string>> boxScores)
+    public void SendSportsUpdate(List<List<string>> boxScores)
     {
         var body = BuildEmailBody(boxScores);
         var mail = CreateEmail(body);

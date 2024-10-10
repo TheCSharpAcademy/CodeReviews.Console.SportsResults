@@ -45,6 +45,6 @@ public class BackgroundTask : BackgroundService
     private async Task Run(CancellationToken stoppingToken)
     {
         var scoreList = await _scraperService.ExecuteScrapeAsync(stoppingToken);
-        _mailService.SendSportsUpdateAsync(scoreList);
+        _mailService.SendSportsUpdate(scoreList);
     }
 }
