@@ -91,6 +91,10 @@ public class MailService
             _logger.LogError(ex, "");
             throw;
         }
+        finally
+        {
+            mail.Dispose();
+        }
     }
 
     public void SendSportsUpdate(List<List<string>> boxScores)
