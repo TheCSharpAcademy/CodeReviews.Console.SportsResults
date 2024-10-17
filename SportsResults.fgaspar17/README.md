@@ -1,7 +1,7 @@
 # Sports Results
 
 A service to help you collect information
-about basketball matches everyday.
+about basketball matches every day.
 Developed using C# and Html Agility Pack.
 
 ## Given Requirements
@@ -16,33 +16,33 @@ Reference Website in the resources area.
 
 ## Features
 
-- Web Scrapper
+- Web Scraper
 
-  - The data is scrapped using the Html Agility Pack library.
+  - The data is scraped using the Html Agility Pack library.
 
 - Worker
   - The application is configured to run asynchronously every 24 hours,
-  thanks to the worker nature you can combine it with a web application
+  - Thanks to the worker nature, you can combine it with a web application
   without blocking the main application thread.
 
 - Sending mail
 
-  - From the appsettings.json you can configure the email to send and the email to receive
+  - From the `appsettings.json` you can configure the email to send and the email to receive
   the message with the basketball results.
-  - ![image](papercut-image)
+  - ![image](https://github.com/user-attachments/assets/39d8c73d-4e0d-41fb-9151-614c2de6cdcf)
 
 ## Challenges
 
 - XPath to query HTML tags.
 - HtmlAgilityPack library.
 - Configuring the worker.
-- Sending and testing an email.
+- Sending and testing email.
 
 ## Lessons Learned
 
 - Scraping with HtmlAgilityPack.
-- Configuring worker service at the start of an application.
-- Using papercut to test the email functionality.
+- Configuring a worker service at the start of an application.
+- Using Papercut to test the email functionality.
 - XPath queries.
 
 ## Areas to Improve
@@ -55,4 +55,8 @@ Reference Website in the resources area.
 
 - StackOverflow posts
 - ChatGPT
-- More links
+- [Sending Mail using FluentMail Video](https://www.youtube.com/watch?v=qSeO9886nRM&t=1030s)
+- [Papercut](https://github.com/ChangemakerStudios/Papercut-SMTP)
+- [HtmlAgilityPack Documentation](https://html-agility-pack.net/documentation)
+- [WebScraper C# Video](https://www.youtube.com/watch?v=wbBuB7-BaXw)
+- [Background Worker Services Video](https://www.youtube.com/watch?v=8Sy69b6-nj0&t=726s)
