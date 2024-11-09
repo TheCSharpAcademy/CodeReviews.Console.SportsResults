@@ -5,7 +5,7 @@ namespace SportsNotifier.hasona23;
 public class SportsNotifierService : BackgroundService
 {
     private readonly ILogger<SportsNotifierService> _logger;
-    private const int DurationMinutes = 60;
+    private const int DurationMinutes = 60 * 24;
     private Scrapper.Scrapper _scrapper;
     private EmailSender.EmailSender _emailSender;
     private string[] _recipients = ["abc@abc.com","foo@foo.com"];
