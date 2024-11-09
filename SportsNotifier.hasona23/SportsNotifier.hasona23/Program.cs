@@ -7,8 +7,8 @@ try
     builder.Services.AddHostedService<SportsNotifierService>()
         .AddSingleton<EmailSender>()
         .AddSingleton<Scrapper>();
-
-    IHost host = builder.Build();
+        
+    var host = builder.Build();
     host.Run();
 }
 catch (Exception ex)
