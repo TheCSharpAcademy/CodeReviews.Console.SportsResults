@@ -8,11 +8,13 @@ public class EmailSender(EmailController emailController, MessageBuilder message
 {
     protected override async Task ExecuteAsync(CancellationToken stopToken)
     {
-        var message = messageBuilder.GetGameMessage();
-        //emailController.SendEmail("Name", "blackpanterastudio@gmail.com", message, "Today's NBA Games");
-        Console.WriteLine(message);
+        SetInterval(() =>
+        {
+            var message = "Hello, there is your fresh news about the recent basketball matches:\n\n" + messageBuilder.GetGameMessage() + "\n" + messageBuilder.GetGameStatisticsMessage();
+            emailController.SendEmail("Name", "blackpanterastudio@gmail.com", message, "Today's NBA Games");
+        }, new TimeSpan(0,0,30)).Wait();
     }
-    
+
     static async Task SetInterval(Action action, TimeSpan timeout)
     {
         await Task.Delay(timeout).ConfigureAwait(false);

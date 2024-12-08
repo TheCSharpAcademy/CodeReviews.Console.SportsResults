@@ -13,8 +13,13 @@ public class MessageBuilder(ScrapperController scrapperController)
 
     public string GetGameStatisticsMessage()
     {
-        var gamesStatisticList = scrapperController.GetGames().Select(p => p.ToString()).ToList();
-        var message = gamesStatisticList.Aggregate("", (current, x) => current + x + "\n");
+        var gamesStatisticList = scrapperController.GetGameStatistics().Select(p => p.ToString()).ToList();
+        var message = "";
+        for (var index = 0; index < gamesStatisticList.Count; index++)
+        {
+            var s = gamesStatisticList[index];
+            message = message + s + "\n\n";
+        }
         return message;
     }
 }
