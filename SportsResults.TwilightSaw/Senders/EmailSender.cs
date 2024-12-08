@@ -12,7 +12,7 @@ public class EmailSender(EmailController emailController, MessageBuilder message
         {
             var message = "Hello, there is your fresh news about the recent basketball matches:\n\n" + messageBuilder.GetGameMessage() + "\n" + messageBuilder.GetGameStatisticsMessage();
             emailController.SendEmail("Name", "blackpanterastudio@gmail.com", message, "Today's NBA Games");
-        }, new TimeSpan(0,0,30)).Wait();
+        }, new TimeSpan(24,0,0)).Wait();
     }
 
     static async Task SetInterval(Action action, TimeSpan timeout)
