@@ -1,4 +1,4 @@
-﻿﻿# SportsResults
+﻿# SportsResults
 
 ## Given Requirements:
 - [x] This is an application that reads sports data from a website once a day and send it to a specific e-mail address.
