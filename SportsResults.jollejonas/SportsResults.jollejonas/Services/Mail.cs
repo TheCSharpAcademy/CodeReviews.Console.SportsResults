@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
 
+namespace SportsResults.jollejonas.Services;
 public class Mail
 {
     private readonly string _smtpAddress;
