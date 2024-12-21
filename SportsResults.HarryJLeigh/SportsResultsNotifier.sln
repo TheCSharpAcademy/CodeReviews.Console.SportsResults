@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportsResultsNotifier", "SportsResultsNotifier\SportsResultsNotifier.csproj", "{161136FC-84F0-41BF-B664-384DE266914A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{161136FC-84F0-41BF-B664-384DE266914A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{161136FC-84F0-41BF-B664-384DE266914A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{161136FC-84F0-41BF-B664-384DE266914A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{161136FC-84F0-41BF-B664-384DE266914A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
