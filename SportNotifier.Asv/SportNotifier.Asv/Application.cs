@@ -84,7 +84,6 @@ public class Application
         string toEmail = DotNetEnv.Env.GetString("RecipientEmail");
         string subject = $"Game Summary Report - {data.Date}";
         string body = GenerateEmailBody(data);
-
         SendEmail(toEmail, subject, body);
     }
 
