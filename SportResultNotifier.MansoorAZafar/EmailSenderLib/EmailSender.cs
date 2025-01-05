@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace EmailSenderLib;
 
-public class MailSender
+public class EmailSender
 {
     string SmtpAddress;
     int PortNumber;
@@ -17,9 +17,9 @@ public class MailSender
 
     private Task? task;
 
-    public MailSender(string SmtpAddress, int PortNumber, bool EnableSsl, 
+    public EmailSender(string SmtpAddress, int PortNumber, bool EnableSsl, 
                     string EmailFromAddress, string Password, string EmailToAddress, 
-                    string Subject, string Body)
+                    string Subject, string Body = "")
     {
         this.SmtpAddress = SmtpAddress;
         this.PortNumber = PortNumber;
@@ -30,6 +30,9 @@ public class MailSender
         this.Subject = Subject;
         this.Body = Body;
     }
+
+    public void SetText(string body)
+        => this.Body = body;
 
     public void SendMail()
     {
