@@ -18,7 +18,7 @@ namespace SportsResult.KroksasC.Services
 
                 var now = DateTime.Now;
 
-                var specificTime = DateTime.Now.Date.AddHours(15).AddMinutes(8);
+                var specificTime = DateTime.Now.Date.AddHours(15).AddMinutes(8);// Change hours in a way that you want, in this exemples hours is 15:08:00 and date is today
 
                 DateTime nextRunTime = now < specificTime ? specificTime : specificTime.AddDays(1);
 
