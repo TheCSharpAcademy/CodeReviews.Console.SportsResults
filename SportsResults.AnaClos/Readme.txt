@@ -10,4 +10,4 @@ If you want to try another time interval, go to SportsController > ExecuteAsync 
 ## Improvements
 Create my own scrapper from a different source and with a different business case.
 ## Appsetting.json
-I had to put the file in .gitignore to pass the tests.
+I had to remove the password field to pass the tests.
