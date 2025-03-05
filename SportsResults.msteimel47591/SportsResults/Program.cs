@@ -29,7 +29,7 @@ internal static class Program
         {
             TimeSpan timeSpan = DateTime.Now - lastScrape;
 
-            if (timeSpan.TotalMinutes > 1)
+            if (timeSpan.TotalHours >= 24)
             {
                 try
                 {
