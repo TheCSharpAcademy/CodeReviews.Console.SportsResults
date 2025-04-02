@@ -7,10 +7,11 @@ var builder = new ConfigurationBuilder();
 builder.AddJsonFile("appsettings.json");
 var config = builder.Build();
 
-// The email and app password are pulled from appsettings.json.
+// The email, app password, and subscriber address are pulled from appsettings.json.
 var emailClient = new EmailClient(
     config["Email"] ?? "", 
-    config["AppPassword"] ?? "");
+    config["AppPassword"] ?? "",
+    config["Subscriber"] ?? "");
 
 // The URL is configurable in appsettings.json, although the scraper is designed around this specific endpoint.
 var url = config["Url"] ?? "http://html-agility-pack.net/";
