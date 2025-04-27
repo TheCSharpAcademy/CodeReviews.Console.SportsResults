@@ -59,19 +59,18 @@ public class Scraper
 
     private static List<int> FindScores(HtmlNode summaryNode, int teamIndex)
     {
+        List<int> result = [];
         var scoreTablesNode = summaryNode
             .SelectSingleNode($".//table[2]/tbody/tr[{teamIndex}]")
             ?? throw new Exception("Node not found");
                 
         var descendants = scoreTablesNode.Descendants("td").ToList();
+        descendants.RemoveAt(0);
+
+        foreach(var score in descendants)
+            result.Add(int.Parse(score.InnerText));
  
-        return 
-        [
-            int.Parse(descendants[1].InnerText),
-            int.Parse(descendants[2].InnerText),
-            int.Parse(descendants[3].InnerText),
-            int.Parse(descendants[4].InnerText),
-        ];
+        return result;
     }
 
     // Debug purposes
