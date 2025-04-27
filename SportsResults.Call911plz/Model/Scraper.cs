@@ -3,26 +3,28 @@ using HtmlAgilityPack;
 
 public class Scraper
 {
-    public static List<GameSummary> GetSummaries(string link)
+    public static List<GameSummary>? GetSummaries(DateTime dayForInfo)
     {
         List<GameSummary> summaries = [];
-        string html = $@"{link}";
+        string html = $"https://www.basketball-reference.com/boxscores/?month={dayForInfo.Month}&day={dayForInfo.Day}&year={dayForInfo.Year}";
         HtmlWeb web = new();
         HtmlDocument htmlDoc = web.Load(html);
 
         var summaryNodes = htmlDoc.DocumentNode
-            .SelectNodes("//div[contains(@class, \"game_summary\")]") 
-            ?? throw new Exception("Summaries not found");;
+            .SelectNodes("//div[contains(@class, \"game_summary\")]");
+        
+        if (summaryNodes == null)
+            return null;
         
         foreach(var node in summaryNodes)
         {
-            summaries.Add(HtmlNodeToSummary(node));
+            summaries.Add(HtmlNodeToSummary(node, dayForInfo));
         }
 
         return summaries;
     }
 
-    private static GameSummary HtmlNodeToSummary(HtmlNode node)
+    private static GameSummary HtmlNodeToSummary(HtmlNode node, DateTime date)
     {
         /*
            Basketball reference have summaries containing a child indicating winner and loser.
@@ -42,7 +44,7 @@ public class Scraper
         Team winner = (team1.Scores.Sum() > team2.Scores.Sum()) ? team1 : team2;
         Team loser = (team1.Scores.Sum() > team2.Scores.Sum()) ? team2 : team1;
 
-        return new GameSummary(winner, loser);
+        return new GameSummary(date, winner, loser);
     }
 
     // teamIndex is the index number in the teams node. Basically getting either team 1 or 2

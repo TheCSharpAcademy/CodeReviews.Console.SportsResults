@@ -1,4 +1,5 @@
 ﻿namespace SportsResults.Call911plz;
+using Spectre.Console;
 
 class Program
 {
@@ -7,28 +8,54 @@ class Program
     private readonly static string SMTPGMAILPASSWORD = "";
     static void Main(string[] args)
     {
-        EmailSender sender = new(EMAIL, SMTPGMAILPASSWORD);
-        sender.SendToSelf("testing", "worked");
+        BasketBallInfoForTheWeek(DateTime.Now - new TimeSpan(7, 0, 0, 0), DateTime.Now);
+    }
 
-        // List<GameSummary> summaries = Scraper.GetSummaries(@"https://www.basketball-reference.com/boxscores/?month=04&day=19&year=2025");
-        // foreach(var summary in summaries)
-        // {
-        //     Console.WriteLine($"Winner: {summary.Winner.Name}");
-        //     Console.Write($"Score: ");
-        //     foreach (int score in summary.Winner.Scores)
-        //     {
-        //         Console.Write($"\t{score}");
-        //     }
-        //     Console.WriteLine();
+    static string BasketBallInfoForTheWeek(DateTime start, DateTime end)
+    {
+        DateTime dayForInfo = start;
+        List<List<GameSummary>?> gamesOverWeek = [];
+        while (dayForInfo < end)
+        {
+            gamesOverWeek.Add(Scraper.GetSummaries(dayForInfo));
+            dayForInfo += new TimeSpan(24, 0, 0);
+        }
 
+        foreach(var game in gamesOverWeek)
+        {
+            PrintGame(game);
+        }
 
-        //     Console.WriteLine($"Loser: {summary.Loser.Name}");
-        //     Console.Write($"Score: ");
-        //     foreach (int score in summary.Loser.Scores)
-        //     {
-        //         Console.Write($"\t{score}");
-        //     }
-        //     Console.WriteLine();
-        // }
+        return default;
+    }
+
+    static void PrintGame(List<GameSummary>? games)
+    {
+        if (games == null)
+        {
+            AnsiConsole.WriteLine("No games played this day");
+            return;
+        }
+
+        var table = new Table
+        {
+            Title = new TableTitle(games[0].Date.ToString())
+        };
+        table.AddColumns(["Team", "Q1", "Q2", "Q3", "Q4", "Total"]);
+        table.ShowRowSeparators();
+
+        foreach (var game in games)
+        {
+            table.AddRow([
+                $"[bold yellow]{game.Winner.Name}[/]\n[red]{game.Loser.Name}[/]",
+                $"{game.Winner.Scores[0]}\n{game.Loser.Scores[0]}",
+                $"{game.Winner.Scores[1]}\n{game.Loser.Scores[1]}",
+                $"{game.Winner.Scores[2]}\n{game.Loser.Scores[2]}",
+                $"{game.Winner.Scores[3]}\n{game.Loser.Scores[3]}",
+                $"{game.Winner.Scores.Sum()}\n{game.Loser.Scores.Sum()}",
+            ]);
+        }
+
+        AnsiConsole.Write(table);
     }
 }
