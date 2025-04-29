@@ -36,3 +36,26 @@ The data will be scraped from this
 | Web Scraping   | `Html Agiliy Pack`|
 
 ---
+
+
+## 🚀 How to Run This App
+
+> Simple and clear instructions on how to get the app running locally.
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/your-username/ExerciseTracker.git
+2. Navigate to the project directory
+   ```bash
+   cd ExerciseTracker
+3. Update to the settings marked in `appsettings.json`
+   
+4. Update the reciever Email in `SportsResultsWorker.cs` class 
+   
+5. Run the project
+   ```bash
+   dotnet run
+
+---
+
+
