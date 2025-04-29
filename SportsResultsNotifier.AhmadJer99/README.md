@@ -17,3 +17,13 @@ The data will be scraped from this
 </table>
 
 ---
+
+## 📚 Resources I Used
+> A list of tutorials, courses, blogs, or documentation that helped me build this project.
+
+- [Learnt how to create the repository pattern following this article.](https://medium.com/@kerimkkara/implementing-the-repository-pattern-in-c-and-net-5fdd91950485)
+- [Learnt how to use Dependency Injection through a video tutorial on YouTube.](https://www.youtube.com/watch?v=GAOCe-2nXqc&t=2391s)
+- [Learnt about Change Tracking in EntityFramework by following MS Docs.](https://learn.microsoft.com/en-us/ef/core/change-tracking/)
+- [Learnt how to debug Change Tracking in EntityFramework by following MS Docs.](https://learn.microsoft.com/en-us/ef/core/change-tracking/debug-views)
+
+---
