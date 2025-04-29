@@ -25,3 +25,14 @@ The data will be scraped from this
 - [I had a revision on sending an email through Gmail SMTP.](https://www.c-sharpcorner.com/blogs/send-email-using-gmail-smtp)
 
 ---
+
+## 🛠️ Tech Stack
+
+| Category        | Technology Used     |
+|----------------|---------------------|
+| Backend        | `ASP.NET Core`      |
+| Dependency Injection | `Built-in .NET Core DI` |
+| Logging        | `Serilog`           |
+| Web Scraping   | `Html Agiliy Pack`|
+
+---
