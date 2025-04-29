@@ -58,4 +58,12 @@ The data will be scraped from this
 
 ---
 
+> The main features of the app.
+
+- [ ] It scrapes the website of NBA results.
+- [ ] Formats the results in a clean way.
+- [ ] Switch between Emailing papercut localhost or Gmail SMTP seamlessly
+- [ ] Logging with Serilog
+
+---
 
