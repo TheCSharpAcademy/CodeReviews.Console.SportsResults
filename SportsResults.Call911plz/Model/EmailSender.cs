@@ -19,7 +19,8 @@ public class EmailSender(string email, string password)
         MailMessage message = new(from, to)
         {
             Subject = subject,
-            Body = content
+            Body = content,
+            IsBodyHtml = true,
         };
 
         try { smtp.Send(message); }
