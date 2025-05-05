@@ -28,13 +28,15 @@ public class ScraperService : IScraperService
         foreach (var gameResultNode in gamesResultsNodes)
         {
             tempHtmlDoc.LoadHtml(gameResultNode.OuterHtml);
-            var tempHtmlNodesList = tempHtmlDoc.DocumentNode.Descendants(0)
-            .Where(n => n.HasClass("teams")).ToList(); // am expecting to get exactly one node matching this filter
 
-            var participantTeamsList = tempHtmlDoc.DocumentNode.SelectNodes("//tr").ToList(); // first Tr element is the losing team, second is the winning team
+            var winningNode = tempHtmlDoc.DocumentNode.Descendants(0)
+            .Where(n => n.HasClass("winner")).ToList(); // am expecting to get exactly one node matching this filter
 
-            var LosingTeam = await ScrapeTeamInfoAsync(participantTeamsList[0]);
-            var WinningTeam = await ScrapeTeamInfoAsync(participantTeamsList[1]);
+            var losingNode = tempHtmlDoc.DocumentNode.Descendants(0)
+            .Where(n => n.HasClass("loser")).ToList(); // am expecting to get exactly one node matching this filter
+
+            var LosingTeam = await ScrapeTeamInfoAsync(losingNode[0]);
+            var WinningTeam = await ScrapeTeamInfoAsync(winningNode[0]);
 
             GameResult gameResult = new()
             {
