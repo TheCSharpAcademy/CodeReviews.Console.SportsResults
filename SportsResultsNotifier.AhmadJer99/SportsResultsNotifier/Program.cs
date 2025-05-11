@@ -21,18 +21,16 @@ var host = Host.CreateDefaultBuilder(args)
     .UseSerilog()
     .ConfigureServices((context, services) =>
     {
-        //services.Configure<EmailSettings>(context.Configuration.GetSection("EmailSettings"));
-        //services.Configure<ScrapeReference>(context.Configuration.GetSection("ScrapeUrl"));
-        //services.Configure<LocalHost>(context.Configuration.GetSection("LocalHost"));
         services.AddSingleton<IConfiguration>(builder.Build());
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IScraperService, ScraperService>();
-        services.AddScoped<SportsResultsWorker>();
+        //services.AddScoped<SportsResultsWorker>();
+        services.AddHostedService<SportsResultsWorker>();
     })
     .Build();
+//var svc = ActivatorUtilities.CreateInstance<SportsResultsWorker>(host.Services);
+host.Run();
 
-var svc = ActivatorUtilities.CreateInstance<SportsResultsWorker>(host.Services);
-await svc.RunAsync();
 static void BuildConfig(IConfigurationBuilder builder)
 {
     builder.SetBasePath(Directory.GetCurrentDirectory())
