@@ -23,7 +23,7 @@ The data will be scraped from this
 
 - [Learnt how to use the Html Agility Pack by reading directly from their documentation.](https://html-agility-pack.net/)
 - [I had a revision on sending an email through Gmail SMTP.](https://www.c-sharpcorner.com/blogs/send-email-using-gmail-smtp)
-
+- [Building a background worker.](https://dev.to/nick_proud/building-a-background-worker-service-in-net-97g)
 ---
 
 ## 🛠️ Tech Stack
