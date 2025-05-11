@@ -26,7 +26,8 @@ public class SportsResultsWorker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await RunAsync();
-            Thread.Sleep(TimeSpan.FromHours(24));
+            await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+
         }
     }
 
