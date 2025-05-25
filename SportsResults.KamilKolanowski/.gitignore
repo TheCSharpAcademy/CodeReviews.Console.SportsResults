@@ -1,0 +1,4 @@
+.idea/*
+!.idea/.gitignore
+!.idea/modules.xml
+!.idea/misc.xml
