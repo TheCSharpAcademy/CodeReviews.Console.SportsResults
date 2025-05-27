@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35806.99 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SportResultsNotifier", "SportResultsNotifier.csproj", "{065C875B-637B-4EE3-BA2D-F64470D48BEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{065C875B-637B-4EE3-BA2D-F64470D48BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{065C875B-637B-4EE3-BA2D-F64470D48BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{065C875B-637B-4EE3-BA2D-F64470D48BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{065C875B-637B-4EE3-BA2D-F64470D48BEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4868BEDD-E2D7-44C3-B545-D865CE2C56F8}
+	EndGlobalSection
+EndGlobal
