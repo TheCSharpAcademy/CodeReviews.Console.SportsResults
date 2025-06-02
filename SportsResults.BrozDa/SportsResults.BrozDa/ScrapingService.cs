@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using SportsResults.BrozDa.Models;
+using System;
 
 namespace SportsResults.BrozDa
 {
@@ -10,13 +11,14 @@ namespace SportsResults.BrozDa
         { 
             _url = url;
         }
-        public void GetTeams()
+
+        public ScrapingServiceResult GetGames(string url)
         {
             //2game day:
-            // _url = "https://www.basketball-reference.com/boxscores/?month=5&day=11&year=2025";
+             _url = "https://www.basketball-reference.com/boxscores/?month=5&day=11&year=2025";
 
             //1 game day:
-             _url = "https://www.basketball-reference.com/boxscores/?month=5&day=16&year=2025";
+            //_url = "https://www.basketball-reference.com/boxscores/?month=5&day=16&year=2025";
 
             //0 game day:
             //_url = "http://basketball-reference.com/boxscores/?month=5&day=17&year=2025";
@@ -24,43 +26,82 @@ namespace SportsResults.BrozDa
             var web = new HtmlWeb();
             var doc = web.Load(_url);
 
-            var games = doc.DocumentNode.SelectNodes("//div[@class='game_summary expanded nohover ']");
+            var gameSummaries = GetGameSummaries(doc);
 
-            if (games is null || games.Count == 0)
+            if (gameSummaries is null) 
             {
-                Console.WriteLine("Nada");
-                return;
+                if (WasNoGamePlayed(doc)) 
+                {
+                    return ScrapingServiceResult.NoPlayedGames();
+                }
+
+                return ScrapingServiceResult.Fail("Error while reading game summary/summaries");
             }
 
-            List<Game> gameList = new List<Game>();
+            List<Game> games = new List<Game>();
 
-            foreach (var game in games) 
+            foreach (var game in gameSummaries) 
             {
-                var playedGame = GetGame(game);
-                Console.WriteLine(playedGame.ToString());
-            }
-           
+                var tempGame = GetGame(game);
+
+                if (tempGame.IsSuccessful)
+                {
+                    games.Add(tempGame.Data!);
+                }
+                else
+                {
+                    return ScrapingServiceResult.Fail(tempGame?.ErrorMessage ?? "Unhandled errror");
+                }
+            }  
+
+            return ScrapingServiceResult.Success(games);
         }
-        public ScrapingServiceResult GetGame(HtmlNode gameDetails)
+
+
+        public ItemScrapingResult<Game> GetGame(HtmlNode gameNode)
         {
-            Team? teamA = GetTeam(gameDetails.SelectSingleNode(".//table[2]/tbody/tr[1]"));
-            Team? teamB = GetTeam(gameDetails.SelectSingleNode(".//table[2]/tbody/tr[2]"));
+            var teamA = GetTeam(gameNode.SelectSingleNode(".//table[2]/tbody/tr[1]"));
+            var teamB = GetTeam(gameNode.SelectSingleNode(".//table[2]/tbody/tr[2]"));
 
-            if (teamA is null || teamB is null) 
+            if (!teamA.IsSuccessful || !teamB.IsSuccessful)
             {
-                return ScrapingServiceResult.InvalidTeams();
+                return ItemScrapingResult<Game>.Fail("Teams not scraped properly.");
             }
 
 
-            Stat? pts = GetStat(gameDetails.SelectSingleNode(".//table[3]/tbody/tr[1]"));
-            Stat? trb = GetStat(gameDetails.SelectSingleNode(".//table[3]/tbody/tr[2]"));
+            var pts = GetStat(gameNode.SelectSingleNode(".//table[3]/tbody/tr[1]"));
+            var trb = GetStat(gameNode.SelectSingleNode(".//table[3]/tbody/tr[2]"));
 
-           if(pts is null || trb is null)
+            if (!pts.IsSuccessful || !trb.IsSuccessful)
             {
-                return ScrapingServiceResult.InvalidStats();
+                return ItemScrapingResult<Game>.Fail("Stats not scraped properly.");
             }
 
-            return ScrapingServiceResult.Success(GetValidGame(teamA, teamB, pts, trb));
+            //null checks are done via IsSuccessful property
+            return ItemScrapingResult<Game>.Success(GetValidGame(teamA.Data!, teamB.Data!, pts.Data!, trb.Data!));
+        }
+
+        private HtmlNodeCollection? GetGameSummaries(HtmlDocument doc)
+        {
+           
+            var gameSummaries = doc.DocumentNode.SelectNodes("//*[@id=\"content\"]/div[3]/div");
+
+            if (gameSummaries is null || gameSummaries.Count == 0)
+            {
+                return null;
+            }
+
+            return gameSummaries;
+        }
+        private bool WasNoGamePlayed(HtmlDocument doc)
+        {
+            var test = doc.DocumentNode.SelectSingleNode("//*[@id=\"content\"]/div[2]/div[1]/p/strong");
+
+            if(test is not null && test.InnerHtml == "No games played on this date.")
+            {
+                return true;
+            }
+            return false;
         }
         private Game GetValidGame(Team teamA, Team teamB, Stat pts, Stat trb)
         {
@@ -82,82 +123,85 @@ namespace SportsResults.BrozDa
 
             return game;
         }
-        private Team? GetTeam(HtmlNode? teamInfo)
+        private ItemScrapingResult<Team> GetTeam(HtmlNode? teamInfo)
         {
             if(teamInfo is null)
             {
-                return null;
+                return ItemScrapingResult<Team>.Fail("Error while reading team Info");
             }
 
             string teamName = teamInfo.SelectSingleNode(".//td/a")?.InnerHtml ?? "error while fetching teamName";
+            if(string.IsNullOrEmpty(teamName))
+                return ItemScrapingResult<Team>.Fail("Error while reading team Name");
 
-            List<int>? quarterScores = GetQuarterScores(teamInfo.SelectNodes(".//td[@class='center']"));
 
-            if(quarterScores is null)
+            var quarterScores = GetQuarterScores(teamInfo.SelectNodes(".//td[@class='center']"));
+
+            if(!quarterScores.IsSuccessful)
             {
-                return null;
-            }    
+                return ItemScrapingResult<Team>.Fail("Error while reading team quarterScores");
+            }
 
-            return new Team()
-            {
-                Name = teamName,
-                TotalScore = quarterScores.Sum(),
-                Quarters = quarterScores
-            };
+            //null checks are done via IsSuccessful property
+            return ItemScrapingResult<Team>.Success(
+                    new Team()
+                    {
+                        Name = teamName,
+                        TotalScore = quarterScores.Data!.Sum(),
+                        Quarters = quarterScores.Data
+                    }
+                );
         }
-        private List<int>? GetQuarterScores(HtmlNodeCollection? quarterScores) 
+        private ItemScrapingResult<List<int>> GetQuarterScores(HtmlNodeCollection? quarterScores) 
         {
             if(quarterScores is null)
             {
-                return null;
+                return ItemScrapingResult<List<int>>.Fail("Error while reading team quarterScores");
             }
 
             List<int> scores = new List<int>();
 
             foreach (var quarter in quarterScores)
             {
-
-                scores.Add(int.TryParse(quarter.InnerHtml, out var score) 
-                    ? score 
-                    : 0
-                    );
+                scores.Add(int.Parse(quarter.InnerHtml));
             }
-            return scores; 
+
+            return ItemScrapingResult<List<int>>.Success(scores); 
         }
 
-        private Stat? GetStat(HtmlNode? statRow) 
+        private ItemScrapingResult<Stat> GetStat(HtmlNode? statRow)
         {
-            if(statRow is null)
+            if (statRow == null)
+                return ItemScrapingResult<Stat>.Fail("Error while reading stat info");
+
+            var statName = statRow.SelectSingleNode(".//td[1]/strong")?.InnerHtml;
+            if (string.IsNullOrWhiteSpace(statName))
+                return ItemScrapingResult<Stat>.Fail("Error while reading stat Name");
+
+            var statPlayerNode = statRow.SelectSingleNode(".//td[2]/a");
+            var fallstatPlayerNode = statRow.SelectSingleNode(".//td[2]");
+
+            var statPlayer = statPlayerNode?.InnerHtml ?? fallstatPlayerNode?.InnerHtml;
+            if (string.IsNullOrWhiteSpace(statPlayer))
+                return ItemScrapingResult<Stat>.Fail("Error while reading stat Player");
+
+            string? statTeam = null;
+            if (fallstatPlayerNode?.LastChild != null && fallstatPlayerNode.LastChild.InnerHtml.Length > 1)
             {
-                return null;
+                statTeam = fallstatPlayerNode.LastChild.InnerHtml.Substring(1);
             }
 
-            string statName;
-            string? statPlayer, statTeam;
+            var statPoints = statRow.SelectSingleNode(".//td[3]")?.InnerHtml;
+            if (string.IsNullOrWhiteSpace(statPoints))
+                return ItemScrapingResult<Stat>.Fail("Error while reading stat Points");
 
-            statName = statRow.SelectSingleNode(".//td[1]/strong")?
-                .InnerHtml ?? "error while fetching stat name";
-
-            statPlayer = statRow.SelectSingleNode(".//td[2]/a")?
-                .InnerHtml ?? null;
-
-            if(statPlayer is null)
+            return ItemScrapingResult<Stat>.Success(new Stat
             {
-                statPlayer = statRow.SelectSingleNode(".//td[2]")?.InnerHtml ?? "error while fetching stat player";
-                statTeam = null;
-                
-            }
-
-            statTeam = statRow.SelectSingleNode(".//td[2]")?
-                .LastChild
-                .InnerHtml
-                .Substring(1);
-
-            string statPoints = statRow.SelectSingleNode(".//td[3]")?
-                .InnerHtml ?? 
-                "error while fetching stat points";
-
-            return new Stat() { Name = statName, Player = statPlayer, Team = statTeam, Points = statPoints };
+                Name = statName,
+                Player = statPlayer,
+                Team = statTeam,
+                Points = statPoints
+            });
         }
     }
 }
