@@ -1,34 +1,39 @@
-﻿namespace SportsResults.BrozDa
+﻿using Microsoft.Extensions.DependencyInjection;
+using SportsResults.BrozDa.Services;
+namespace SportsResults.BrozDa
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            var services = new ServiceCollection();
+           
+            var serviceProvider = BuildServices(services);
 
-            string baseUrl = "https://www.basketball-reference.com/boxscores/?";
 
+            var controller = serviceProvider.GetRequiredService<SportNotifierController>();
 
-            var url = baseUrl + $"month=5&day={1}&year=2025";
+            controller.SendReport();
 
-            var service = new ScrapingService(baseUrl);
+        }
+        public static ServiceProvider BuildServices(IServiceCollection services)
+        {
+            services.AddScoped<EmailService>(
+                sp => new EmailService(
+                    "smtp.freesmtpservers.com", 
+                    25, 
+                    "yedaked211@eduhed.com", 
+                    "sportresults@test.com"
+                    )
+                );
+            services.AddScoped<ScrapingService>();
 
-            var scrapeResult = service.GetGames("lol");
-            Console.WriteLine(scrapeResult.ToString());
+            services.AddScoped<SportNotifierController>(sp => new SportNotifierController(
+                sp.GetRequiredService<ScrapingService>(),
+                sp.GetRequiredService<EmailService>()
+                ));
 
-            /*for (int i = 1; i <= 20; i++)
-            {
-                var url = baseUrl + $"month=5&day={i}&year=2025";
-
-                var scrapeResult = service.GetGames(url);
-                Console.WriteLine(scrapeResult.ToString());
-                Console.WriteLine( new string('#', 20));
-            
-            }*/
-
-            
-
-            
-
+            return services.BuildServiceProvider();
         }
 
     }

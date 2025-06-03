@@ -1,30 +1,29 @@
 ﻿using HtmlAgilityPack;
 using SportsResults.BrozDa.Models;
-using System;
 
-namespace SportsResults.BrozDa
+namespace SportsResults.BrozDa.Services
 {
+    /// <summary>
+    /// Handles scraping NBA game data from basketball-reference.com.
+    /// </summary>
     internal class ScrapingService
     {
-        private string _url;
-        public ScrapingService(string url) 
-        { 
-            _url = url;
-        }
+        /// <summary>
+        /// The base URL for the basketball-reference box scores page.
+        /// </summary>
+        public string BaseUrl { get; } = "https://www.basketball-reference.com/boxscores/?";
 
-        public ScrapingServiceResult GetGames(string url)
+        /// <summary>
+        /// Retrieves game data for the current date by scraping the website.
+        /// </summary>
+        /// <returns>A <see cref="ScrapingServiceResult"/> representing the outcome of the scrape.</returns>
+        public ScrapingServiceResult GetGames()
         {
-            //2game day:
-             _url = "https://www.basketball-reference.com/boxscores/?month=5&day=11&year=2025";
 
-            //1 game day:
-            //_url = "https://www.basketball-reference.com/boxscores/?month=5&day=16&year=2025";
-
-            //0 game day:
-            //_url = "http://basketball-reference.com/boxscores/?month=5&day=17&year=2025";
+            var url = BaseUrl + $"month={DateTime.Now.Month}&day={DateTime.Now.Day}&year={DateTime.Now.Year}";
 
             var web = new HtmlWeb();
-            var doc = web.Load(_url);
+            var doc = web.Load(url);
 
             var gameSummaries = GetGameSummaries(doc);
 
@@ -56,9 +55,44 @@ namespace SportsResults.BrozDa
 
             return ScrapingServiceResult.Success(games);
         }
+        /// <summary>
+        /// Attempts to select all game summary nodes from the HTML document.
+        /// </summary>
+        /// <param name="doc">The loaded HTML document.</param>
+        /// <returns>A collection of game summary nodes or null.</returns>
+        private HtmlNodeCollection? GetGameSummaries(HtmlDocument doc)
+        {
 
+            var gameSummaries = doc.DocumentNode.SelectNodes("//*[@id=\"content\"]/div[3]/div");
 
-        public ItemScrapingResult<Game> GetGame(HtmlNode gameNode)
+            if (gameSummaries is null || gameSummaries.Count == 0)
+            {
+                return null;
+            }
+
+            return gameSummaries;
+        }
+        /// <summary>
+        /// Checks if the loaded page indicates that no games were played today.
+        /// </summary>
+        /// <param name="doc">The loaded HTML document.</param>
+        /// <returns>True if no games were played, false otherwise.</returns>
+        private bool WasNoGamePlayed(HtmlDocument doc)
+        {
+            var test = doc.DocumentNode.SelectSingleNode("//*[@id=\"content\"]/div[2]/div[1]/p/strong");
+
+            if (test is not null && test.InnerHtml == "No games played on this date.")
+            {
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Extracts a game object from an HTML node representing a game summary.
+        /// </summary>
+        /// <param name="gameNode">The HTML node containing game data.</param>
+        /// <returns>An <see cref="ItemScrapingResult{Game}"/> indicating success or failure.</returns>
+        private ItemScrapingResult<Game> GetGame(HtmlNode gameNode)
         {
             var teamA = GetTeam(gameNode.SelectSingleNode(".//table[2]/tbody/tr[1]"));
             var teamB = GetTeam(gameNode.SelectSingleNode(".//table[2]/tbody/tr[2]"));
@@ -78,32 +112,17 @@ namespace SportsResults.BrozDa
             }
 
             //null checks are done via IsSuccessful property
-            return ItemScrapingResult<Game>.Success(GetValidGame(teamA.Data!, teamB.Data!, pts.Data!, trb.Data!));
+            return ItemScrapingResult<Game>.Success(GetGameObject(teamA.Data!, teamB.Data!, pts.Data!, trb.Data!));
         }
-
-        private HtmlNodeCollection? GetGameSummaries(HtmlDocument doc)
-        {
-           
-            var gameSummaries = doc.DocumentNode.SelectNodes("//*[@id=\"content\"]/div[3]/div");
-
-            if (gameSummaries is null || gameSummaries.Count == 0)
-            {
-                return null;
-            }
-
-            return gameSummaries;
-        }
-        private bool WasNoGamePlayed(HtmlDocument doc)
-        {
-            var test = doc.DocumentNode.SelectSingleNode("//*[@id=\"content\"]/div[2]/div[1]/p/strong");
-
-            if(test is not null && test.InnerHtml == "No games played on this date.")
-            {
-                return true;
-            }
-            return false;
-        }
-        private Game GetValidGame(Team teamA, Team teamB, Stat pts, Stat trb)
+        /// <summary>
+        /// Constructs a <see cref="Game"/> object from given team and stat data.
+        /// </summary>
+        /// <param name="teamA">Team A details.</param>
+        /// <param name="teamB">Team B details.</param>
+        /// <param name="pts">Points stat.</param>
+        /// <param name="trb">Total rebounds stat.</param>
+        /// <returns>A populated <see cref="Game"/> object.</returns>
+        private Game GetGameObject(Team teamA, Team teamB, Stat pts, Stat trb)
         {
             Game game = new Game();
 
@@ -123,6 +142,11 @@ namespace SportsResults.BrozDa
 
             return game;
         }
+        /// <summary>
+        /// Extracts a <see cref="Team"/> object from an HTML node.
+        /// </summary>
+        /// <param name="teamInfo">The HTML node representing team info.</param>
+        /// <returns>An <see cref="ItemScrapingResult{Team}"/> with success or error info.</returns>
         private ItemScrapingResult<Team> GetTeam(HtmlNode? teamInfo)
         {
             if(teamInfo is null)
@@ -152,6 +176,11 @@ namespace SportsResults.BrozDa
                     }
                 );
         }
+        /// <summary>
+        /// Parses the quarter scores for a team from the HTML.
+        /// </summary>
+        /// <param name="quarterScores">A collection of HTML nodes with quarter scores.</param>
+        /// <returns>An <see cref="ItemScrapingResult{List{int}}"/> of parsed scores.</returns>
         private ItemScrapingResult<List<int>> GetQuarterScores(HtmlNodeCollection? quarterScores) 
         {
             if(quarterScores is null)
@@ -169,6 +198,11 @@ namespace SportsResults.BrozDa
             return ItemScrapingResult<List<int>>.Success(scores); 
         }
 
+        /// <summary>
+        /// Extracts a <see cref="Stat"/> object (PTS or TRB) from the provided HTML row.
+        /// </summary>
+        /// <param name="statRow">The HTML node representing a stat row.</param>
+        /// <returns>An <see cref="ItemScrapingResult{Stat}"/> containing the parsed stat or an error message.</returns>
         private ItemScrapingResult<Stat> GetStat(HtmlNode? statRow)
         {
             if (statRow == null)
@@ -193,7 +227,7 @@ namespace SportsResults.BrozDa
 
             var statPoints = statRow.SelectSingleNode(".//td[3]")?.InnerHtml;
             if (string.IsNullOrWhiteSpace(statPoints))
-                return ItemScrapingResult<Stat>.Fail("Error while reading stat Points");
+                return ItemScrapingResult<Stat>.Fail("Error while reading stat Points.");
 
             return ItemScrapingResult<Stat>.Success(new Stat
             {
