@@ -21,9 +21,9 @@
             {
                 IsSuccessful = true,
                 Data = data
-
             };
         }
+
         /// <summary>
         /// Returns unsuccessful <see cref="ItemScrapingResult{T}"/> containing passed data
         /// </summary>
@@ -38,6 +38,5 @@
                 ErrorMessage = errorMsg
             };
         }
-
     }
 }

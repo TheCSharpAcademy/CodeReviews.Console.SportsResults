@@ -19,7 +19,6 @@ namespace SportsResults.BrozDa.Services
         /// <returns>A <see cref="ScrapingServiceResult"/> representing the outcome of the scrape.</returns>
         public ScrapingServiceResult GetGames()
         {
-
             var url = BaseUrl + $"month={DateTime.Now.Month}&day={DateTime.Now.Day}&year={DateTime.Now.Year}";
 
             var web = new HtmlWeb();
@@ -27,9 +26,9 @@ namespace SportsResults.BrozDa.Services
 
             var gameSummaries = GetGameSummaries(doc);
 
-            if (gameSummaries is null) 
+            if (gameSummaries is null)
             {
-                if (WasNoGamePlayed(doc)) 
+                if (WasNoGamePlayed(doc))
                 {
                     return ScrapingServiceResult.NoPlayedGames();
                 }
@@ -39,7 +38,7 @@ namespace SportsResults.BrozDa.Services
 
             List<Game> games = new List<Game>();
 
-            foreach (var game in gameSummaries) 
+            foreach (var game in gameSummaries)
             {
                 var tempGame = GetGame(game);
 
@@ -51,10 +50,11 @@ namespace SportsResults.BrozDa.Services
                 {
                     return ScrapingServiceResult.Fail(tempGame?.ErrorMessage ?? "Unhandled errror");
                 }
-            }  
+            }
 
             return ScrapingServiceResult.Success(games);
         }
+
         /// <summary>
         /// Attempts to select all game summary nodes from the HTML document.
         /// </summary>
@@ -62,7 +62,6 @@ namespace SportsResults.BrozDa.Services
         /// <returns>A collection of game summary nodes or null.</returns>
         private HtmlNodeCollection? GetGameSummaries(HtmlDocument doc)
         {
-
             var gameSummaries = doc.DocumentNode.SelectNodes("//*[@id=\"content\"]/div[3]/div");
 
             if (gameSummaries is null || gameSummaries.Count == 0)
@@ -72,6 +71,7 @@ namespace SportsResults.BrozDa.Services
 
             return gameSummaries;
         }
+
         /// <summary>
         /// Checks if the loaded page indicates that no games were played today.
         /// </summary>
@@ -87,6 +87,7 @@ namespace SportsResults.BrozDa.Services
             }
             return false;
         }
+
         /// <summary>
         /// Extracts a game object from an HTML node representing a game summary.
         /// </summary>
@@ -102,7 +103,6 @@ namespace SportsResults.BrozDa.Services
                 return ItemScrapingResult<Game>.Fail("Teams not scraped properly.");
             }
 
-
             var pts = GetStat(gameNode.SelectSingleNode(".//table[3]/tbody/tr[1]"));
             var trb = GetStat(gameNode.SelectSingleNode(".//table[3]/tbody/tr[2]"));
 
@@ -114,6 +114,7 @@ namespace SportsResults.BrozDa.Services
             //null checks are done via IsSuccessful property
             return ItemScrapingResult<Game>.Success(GetGameObject(teamA.Data!, teamB.Data!, pts.Data!, trb.Data!));
         }
+
         /// <summary>
         /// Constructs a <see cref="Game"/> object from given team and stat data.
         /// </summary>
@@ -142,6 +143,7 @@ namespace SportsResults.BrozDa.Services
 
             return game;
         }
+
         /// <summary>
         /// Extracts a <see cref="Team"/> object from an HTML node.
         /// </summary>
@@ -149,19 +151,18 @@ namespace SportsResults.BrozDa.Services
         /// <returns>An <see cref="ItemScrapingResult{Team}"/> with success or error info.</returns>
         private ItemScrapingResult<Team> GetTeam(HtmlNode? teamInfo)
         {
-            if(teamInfo is null)
+            if (teamInfo is null)
             {
                 return ItemScrapingResult<Team>.Fail("Error while reading team Info");
             }
 
             string teamName = teamInfo.SelectSingleNode(".//td/a")?.InnerHtml ?? "error while fetching teamName";
-            if(string.IsNullOrEmpty(teamName))
+            if (string.IsNullOrEmpty(teamName))
                 return ItemScrapingResult<Team>.Fail("Error while reading team Name");
-
 
             var quarterScores = GetQuarterScores(teamInfo.SelectNodes(".//td[@class='center']"));
 
-            if(!quarterScores.IsSuccessful)
+            if (!quarterScores.IsSuccessful)
             {
                 return ItemScrapingResult<Team>.Fail("Error while reading team quarterScores");
             }
@@ -176,14 +177,15 @@ namespace SportsResults.BrozDa.Services
                     }
                 );
         }
+
         /// <summary>
         /// Parses the quarter scores for a team from the HTML.
         /// </summary>
         /// <param name="quarterScores">A collection of HTML nodes with quarter scores.</param>
         /// <returns>An <see cref="ItemScrapingResult{List{int}}"/> of parsed scores.</returns>
-        private ItemScrapingResult<List<int>> GetQuarterScores(HtmlNodeCollection? quarterScores) 
+        private ItemScrapingResult<List<int>> GetQuarterScores(HtmlNodeCollection? quarterScores)
         {
-            if(quarterScores is null)
+            if (quarterScores is null)
             {
                 return ItemScrapingResult<List<int>>.Fail("Error while reading team quarterScores");
             }
@@ -195,7 +197,7 @@ namespace SportsResults.BrozDa.Services
                 scores.Add(int.Parse(quarter.InnerHtml));
             }
 
-            return ItemScrapingResult<List<int>>.Success(scores); 
+            return ItemScrapingResult<List<int>>.Success(scores);
         }
 
         /// <summary>

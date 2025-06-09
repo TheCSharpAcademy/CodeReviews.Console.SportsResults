@@ -15,7 +15,7 @@
         /// <returns>A string representation of the Team</returns>
         public override string ToString()
         {
-            if(Name is null || Quarters is null)
+            if (Name is null || Quarters is null)
             {
                 return "Invalid team";
             }
@@ -24,4 +24,3 @@
         }
     }
 }
-

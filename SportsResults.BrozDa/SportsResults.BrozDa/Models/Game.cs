@@ -25,12 +25,10 @@
                 $"PTS: {Pts.Player} - {Pts.Team}, {Pts.Points}\n" +
                 $"TRB: {Trb.Player} - {Trb.Team}, {Trb.Points}\n";
             }
-
             else
             {
                 return "Invalid game";
             }
         }
     }
-   
 }

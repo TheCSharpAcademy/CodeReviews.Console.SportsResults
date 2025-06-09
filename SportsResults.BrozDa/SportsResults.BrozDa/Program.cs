@@ -1,30 +1,43 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SportsResults.BrozDa.Services;
+using Microsoft.Extensions.Configuration;
+using SportsResults.BrozDa.Models;
+
 namespace SportsResults.BrozDa
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var services = new ServiceCollection();
-           
-            var serviceProvider = BuildServices(services);
 
+            Console.WriteLine(Environment.CurrentDirectory);
+
+            var services = new ServiceCollection();
+
+            var serviceProvider = BuildServices(services);
 
             var controller = serviceProvider.GetRequiredService<SportNotifierController>();
 
             controller.SendReport();
 
         }
+
         public static ServiceProvider BuildServices(IServiceCollection services)
         {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var smtpSettings = config.GetSection("Smtp").Get<SmtpSettings>();
+
+            if (smtpSettings is null)
+            {
+                Console.WriteLine("Invalid settings! Please contact admin");
+            }
+
             services.AddScoped<EmailService>(
-                sp => new EmailService(
-                    "smtp.freesmtpservers.com", 
-                    25, 
-                    "yedaked211@eduhed.com", 
-                    "sportresults@test.com"
-                    )
+                sp => new EmailService(smtpSettings!)
                 );
             services.AddScoped<ScrapingService>();
 
@@ -35,6 +48,5 @@ namespace SportsResults.BrozDa
 
             return services.BuildServiceProvider();
         }
-
     }
 }

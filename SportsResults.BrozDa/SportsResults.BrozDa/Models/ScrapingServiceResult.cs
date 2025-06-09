@@ -23,20 +23,20 @@ namespace SportsResults.BrozDa.Models
             {
                 return "Unsucessful scraping: " + ErrorMessage;
             }
-            if(Games!.Count == 0)
+            if (Games!.Count == 0)
             {
                 return "No games were played";
             }
 
             StringBuilder sb = new StringBuilder();
-            foreach (Game game in Games) 
+            foreach (Game game in Games)
             {
                 sb.Append(game.ToString());
                 sb.Append("\n");
             }
             return sb.ToString();
-
         }
+
         /// <summary>
         /// Creates a successful result with no games played.
         /// </summary>
@@ -49,6 +49,7 @@ namespace SportsResults.BrozDa.Models
                 Games = new List<Game>()
             };
         }
+
         /// <summary>
         /// Creates a successful result with a list of games.
         /// </summary>
@@ -62,6 +63,7 @@ namespace SportsResults.BrozDa.Models
                 Games = games
             };
         }
+
         /// <summary>
         /// Creates a failed result with an error message.
         /// </summary>
@@ -75,6 +77,5 @@ namespace SportsResults.BrozDa.Models
                 ErrorMessage = errorMsg
             };
         }
-        
     }
 }

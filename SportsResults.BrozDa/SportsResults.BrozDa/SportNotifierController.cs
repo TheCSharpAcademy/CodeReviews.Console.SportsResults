@@ -20,6 +20,7 @@ namespace SportsResults.BrozDa
             ScrapingService = scrapingService;
             EmailService = emailService;
         }
+
         /// <summary>
         /// Retrieves the latest sports results and sends them in an email.
         /// </summary>
@@ -29,6 +30,5 @@ namespace SportsResults.BrozDa
 
             EmailService.Send(result.ToString());
         }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using SportsResults.BrozDa.Models;
+using System.Net.Mail;
 
 namespace SportsResults.BrozDa.Services
 {
@@ -7,44 +8,34 @@ namespace SportsResults.BrozDa.Services
     /// </summary>
     internal class EmailService
     {
-        public string SmtpClientHost { get; set; }
-        public int SmtpClientPort { get; set; }
-        public string SourceEmail { get; set; }
-        public string DestinationEmail {  get; set; }
+        SmtpSettings SmtpSettings { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailService"/> class.
         /// </summary>
-        /// <param name="smtpClientHost">The SMTP server host.</param>
-        /// <param name="smtpClientPort">The SMTP server port.</param>
-        /// <param name="sourceEmail">The sender's email address.</param>
-        /// <param name="destinationEmail">The recipient's email address.</param>
-        public EmailService(string smtpClientHost, int smtpClientPort, string sourceEmail, string destinationEmail)
+        /// <param name="smtpSettings">The SMTP settings containing Host, port, sender and recipient</param>
+        public EmailService(SmtpSettings smtpSettings)
         {
-            SmtpClientHost = smtpClientHost;
-            SmtpClientPort = smtpClientPort;
-            SourceEmail = sourceEmail;
-            DestinationEmail = destinationEmail;
+            SmtpSettings = smtpSettings;
         }
+
         /// <summary>
         /// Sends an email containing the provided body text with the current date as the subject.
         /// </summary>
         /// <param name="body">The content of the email message.</param>
         public void Send(string body)
         {
-
             using MailMessage message = new MailMessage();
-            message.From = new MailAddress(SourceEmail);
-            message.To.Add(DestinationEmail);
+            message.From = new MailAddress(SmtpSettings.Sender);
+            message.To.Add(SmtpSettings.Recipient);
             message.Subject = $"NBA games result for {DateTime.Now.ToString("d MMM yyyy")}";
             message.Body = body;
 
-            using SmtpClient smtp = new SmtpClient(SmtpClientHost, SmtpClientPort);
+            using SmtpClient smtp = new SmtpClient(SmtpSettings.Host, SmtpSettings.Port);
 
             smtp.Send(message);
 
             Console.WriteLine("Email sent!");
-
         }
     }
 }
