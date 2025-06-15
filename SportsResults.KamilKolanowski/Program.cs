@@ -7,6 +7,6 @@ class Program
     static void Main(string[] args)
     {
         SportsNotifierController controller = new();
-        controller.SendMessageWithSportsResults();
+        controller.TriggerSportsResultsMessageSenderAsync("<your_recipient_email_address>");
     }
 }
