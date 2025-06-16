@@ -1,68 +1,44 @@
-﻿using Spectre.Console;
+﻿using Microsoft.Extensions.Hosting;
+using Spectre.Console;
 using SportResultsNotifier.Controllers;
 using SportResultsNotifier.Models;
-using System.Configuration;
-using static SportResultsNotifier.Enums;
 
-namespace SportResultsNotifier.Services;
+namespace SportResultsNotifier;
 
-internal class UserServices
+class Services : BackgroundService
 {
-    internal static IUser GetUser(IUser? user,Configuration config)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken = default)
     {
-        if (config.AppSettings.Settings["EmailAddress"].Value == "") user = SetUser(user, config);
-        else
+        // real delay
+        // TimeSpan delay = TimeSpan.FromDays(1);
+
+        // tesing delay
+        TimeSpan delay = TimeSpan.FromSeconds(10);
+
+        await Wait(async () =>
         {
-            user = config.AppSettings.Settings["Type"].Value == "Simple" ?
-                new SimpleUser(config.AppSettings.Settings["EmailAddress"].Value, config.AppSettings.Settings["FirstName"].Value,
-                config.AppSettings.Settings["LastName"].Value, config.AppSettings.Settings["Type"].Value) :
-                new GmailUser(config.AppSettings.Settings["EmailAddress"].Value, config.AppSettings.Settings["FirstName"].Value,
-                config.AppSettings.Settings["LastName"].Value, config.AppSettings.Settings["Type"].Value, config.AppSettings.Settings["AppPassword"].Value);
-        }
-        return user;
+            Results results = ResultsController.GetResults();
+            IUser user = Settings.Default.Type == "Simple" ?
+            new SimpleUser() { Email = Settings.Default.EmailAddress, FirstName = Settings.Default.FirstName, LastName = Settings.Default.LastName, Type = Settings.Default.Type, AppPassword = Settings.Default.AppPassword, }
+            : new GmailUser() { Email = Settings.Default.EmailAddress, FirstName = Settings.Default.FirstName, LastName = Settings.Default.LastName, Type = Settings.Default.Type, AppPassword = Settings.Default.AppPassword, };
+            if (results.Body != null) await MailController.SendWithAllMethodsAsync(results, user);
+        }, delay);
     }
 
-    internal static IUser SetUser(IUser? user,Configuration config)
+    private async Task Wait(Action action, TimeSpan delay)
     {
-        bool option = AnsiConsole.Prompt(new SelectionPrompt<bool>().Title("What kind of user do you want to choose?").AddChoices(true, false)
-            .UseConverter(x => x == true ? "Simple User" : "Gmail User"));
-
-        AnsiConsole.MarkupLine("To simplify the tests, the sender and receiver will be the same person");
-        string emailAddress = UserInputs.GetEmailAddress();
-        string firstName = UserInputs.GetName("Enter a First Name:");
-        string lastName = UserInputs.GetName("Enter a Last Name:");
-        if (option) user = new SimpleUser(emailAddress,firstName,lastName,"Simple");
-        else
+        // if statement can be deleted to let the app running indefinitely
+        if (ResultsController.AppIteration >= 11)
         {
-            string appPassword = UserInputs.GetAppPassword();
-            user = new GmailUser(emailAddress,firstName,lastName,"Gmail",appPassword);
+            AnsiConsole.MarkupLine("\n\r[blue]All Mails[/] sent");
+            Environment.Exit(0);
+            return;
         }
-        UserController.SetUser(user,config);
-        return user;
-    }
-}
 
-internal class ResultServices
-{
-    internal static async Task SendResults(IUser user,ResultMenuOption option)
-    {
-        Results results = ResultsController.GetResults();
-        if (results.Body == null) AnsiConsole.MarkupLine("[red]No[/] results found.");
-        else switch (option)
-                {
-                    case ResultMenuOption.LocalFolder:
-                        await MailController.SendLocalFolderAsync(results, user);
-                        break;
-                    case ResultMenuOption.PaperCutServer:
-                        await MailController.SendPapercutAsync(results, user);
-                        break;
-                    case ResultMenuOption.GmailSmtp:
-                        await MailController.SendGmailSmtpAsync(results, user);
-                        break;
-                    case ResultMenuOption.AllPossibleMethods:
-                        await MailController.SendWithAllMethodsAsync(results, user);
-                        break;
-                    default: break;
-                }
+        await Task.Delay(delay);
+
+        action();
+
+        Wait(action, delay);
     }
 }
