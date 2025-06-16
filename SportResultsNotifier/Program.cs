@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SportResultsNotifier.Controllers;
-using System.Configuration;
 
 namespace SportResultsNotifier;
 

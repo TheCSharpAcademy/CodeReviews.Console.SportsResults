@@ -21,12 +21,6 @@ class ResultsController
         try
         {
 
-
-
-            // test values
-            // uncomment and change the date if no results are avalaible
-            // url = "https://www.basketball-reference.com/boxscores/?month=4&day=9&year=2025";
-
             string url = $"https://www.basketball-reference.com/boxscores/?month={today.Month}&day={today.Day}&year={today.Year}";
             HtmlWeb web = new();
             HtmlDocument document = web.Load(url);
