@@ -43,8 +43,16 @@ public class Scrapper
 
             var parsedLoser = ProcessResultRow(loserTds);
             var parsedWinner = ProcessResultRow(winnerTds);
-            
-            //string loserTeam = 
+
+            Match match = new Match()
+            {
+                Team1 = parsedLoser[0],
+                Team1Score = int.Parse(parsedLoser[1]),
+                Team2 = parsedWinner[0],
+                Team2Score = int.Parse(parsedWinner[1]),
+                Winner = parsedWinner[0],
+            };
+            matches.Add(match);
 
         }
         return matches;
@@ -54,8 +62,10 @@ public class Scrapper
         var web= new HtmlWeb();
         var html=web.Load(_url);
         var matchesDiv=html.DocumentNode.SelectNodes("//div[@class='game_summaries']");
+        if (matchesDiv == null) return [];
         var matchDate = GetMatchDate(html);
         var matches=GetMatchPlayers(matchesDiv);
+        matches.ForEach(match=>match.Date=matchDate);
         return matches;
     }
 }
