@@ -29,30 +29,37 @@ public class Scrapper
         DateTime date = DateTime.Parse(dateNode,CultureInfo.InvariantCulture);
         return date;
     }
+
+    private Match GetMatch(HtmlNode node)
+    {
+        var tableInfo = node.SelectSingleNode("//table[@class='teams']/tbody");
+        var loserTr=tableInfo.SelectSingleNode("//tr[@class='loser']");
+        var winnerTr=tableInfo.SelectSingleNode("//tr[@class='winner']");
+
+        var loserTds = loserTr.SelectNodes("./td");
+        var winnerTds = winnerTr.SelectNodes("./td");
+
+        var parsedLoser = ProcessResultRow(loserTds);
+        var parsedWinner = ProcessResultRow(winnerTds);
+
+        Match match = new Match()
+        {
+            Team1 = parsedLoser[0],
+            Team1Score = int.Parse(parsedLoser[1]),
+            Team2 = parsedWinner[0],
+            Team2Score = int.Parse(parsedWinner[1]),
+            Winner = parsedWinner[0],
+        };
+        return match;
+    }
     public List<Match> GetMatchPlayers(HtmlNodeCollection nodes)
     {
         List<Match> matches = new List<Match>();
         foreach (HtmlNode node in nodes)
-        {
-            var tableInfo = node.SelectSingleNode("//table[@class='teams']/tbody");
-            var loserTr=tableInfo.SelectSingleNode("//tr[@class='loser']");
-            var winnerTr=tableInfo.SelectSingleNode("//tr[@class='winner']");
-
-            var loserTds = loserTr.SelectNodes("./td");
-            var winnerTds = winnerTr.SelectNodes("./td");
-
-            var parsedLoser = ProcessResultRow(loserTds);
-            var parsedWinner = ProcessResultRow(winnerTds);
-
-            Match match = new Match()
-            {
-                Team1 = parsedLoser[0],
-                Team1Score = int.Parse(parsedLoser[1]),
-                Team2 = parsedWinner[0],
-                Team2Score = int.Parse(parsedWinner[1]),
-                Winner = parsedWinner[0],
-            };
-            matches.Add(match);
+        { 
+            
+           var match = GetMatch(node);
+           matches.Add(match);
 
         }
         return matches;
