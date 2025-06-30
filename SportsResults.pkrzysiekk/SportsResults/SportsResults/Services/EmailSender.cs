@@ -51,7 +51,7 @@ public class EmailSender
         return message;
         
     }
-    public void Send(string subject, string body)
+    public void Send(string body, string subject= "Basketball info")
     {
         foreach (var mail in _mailTo)
         {
