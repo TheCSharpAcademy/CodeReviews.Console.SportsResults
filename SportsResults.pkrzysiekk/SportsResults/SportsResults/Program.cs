@@ -9,5 +9,4 @@ Scrapper scrapper = new Scrapper("https://www.basketball-reference.com/boxscores
  {
      Console.WriteLine(match.Team1);
      Console.WriteLine(match.Team2);
-     
  }
