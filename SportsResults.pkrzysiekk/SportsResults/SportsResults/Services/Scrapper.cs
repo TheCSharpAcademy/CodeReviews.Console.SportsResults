@@ -52,7 +52,8 @@ public class Scrapper
         };
         return match;
     }
-    public List<Match> GetMatchPlayers(HtmlNodeCollection nodes)
+
+    private List<Match> GetMatchPlayers(HtmlNodeCollection nodes)
     {
         List<Match> matches = new List<Match>();
         foreach (HtmlNode node in nodes)
