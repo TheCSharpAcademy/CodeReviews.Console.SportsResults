@@ -1,6 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
-using Microsoft.Extensions.Configuration;
 
 namespace SportsResults;
 
@@ -13,7 +13,6 @@ public class EmailSender
     private string _smtpPassword;
     private List<MailAddress> _mailTo = new List<MailAddress>();
     private SmtpClient _smtpClient;
-
 
     public EmailSender()
     {
@@ -33,11 +32,10 @@ public class EmailSender
             }
         }
         _smtpClient = new SmtpClient(_smtpAddress, _smtpPort);
-        _smtpClient.Credentials=new NetworkCredential(_smtpUsername, _smtpPassword);
+        _smtpClient.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
         _smtpClient.EnableSsl = _smtpEnableSsl;
-       
     }
-    
+
     public void AddReceiver(string email)
     {
         _mailTo.Add(new MailAddress(email));
@@ -49,18 +47,16 @@ public class EmailSender
         message.From = new MailAddress(_smtpUsername);
         message.To.Add(receiver);
         return message;
-        
     }
-    public void Send(string body, string subject= "Basketball info")
+
+    public void Send(string body, string subject = "Basketball info")
     {
         foreach (var mail in _mailTo)
         {
-            var messageTemplate= CreateMessageTemplate(mail);
+            var messageTemplate = CreateMessageTemplate(mail);
             messageTemplate.Subject = subject;
             messageTemplate.Body = body;
             _smtpClient.Send(messageTemplate);
         }
     }
-
-
 }
