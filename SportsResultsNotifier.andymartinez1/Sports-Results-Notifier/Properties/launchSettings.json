@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sports-Results-Notifier": {
+      "commandName": "Project",
+      "workingDirectory": "X:\\C#\\.NET-Console-Apps\\_C#Academy-Code-Reviews\\SportsResults.andymartinez1\\SportsResultsNotifier.andymartinez1\\Sports-Results-Notifier\\"
+    }
+  }
+}
