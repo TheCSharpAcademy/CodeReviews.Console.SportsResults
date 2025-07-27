@@ -16,6 +16,7 @@ services.AddScoped<IEmailService, EmailService>();
 services.AddScoped<ScraperController>();
 services.AddScoped<Menu>();
 services.AddSingleton<IConfiguration>(configuration);
+services.AddHostedService<DailyEmailSender>();
 
 // Build the service provider
 var serviceProvider = services.BuildServiceProvider();

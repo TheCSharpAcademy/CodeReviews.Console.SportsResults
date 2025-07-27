@@ -18,9 +18,7 @@ public class ScraperController
 
     public Game GetGameInfo()
     {
-        var url = "https://www.basketball-reference.com/boxscores/";
-
-        var doc = _scraperService.ScrapeHtml(url);
+        var doc = _scraperService.ScrapeHtml();
 
         var game = _scraperService.GetGamePlayedInfo(doc);
 

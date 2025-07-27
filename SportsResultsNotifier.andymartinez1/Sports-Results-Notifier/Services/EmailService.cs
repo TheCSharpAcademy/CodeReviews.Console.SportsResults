@@ -62,16 +62,23 @@ public class EmailService : IEmailService
         email.Subject = emailSubject;
         email.Body = new TextPart(TextFormat.Html) { Text = emailBody };
 
-        using (var smtp = new SmtpClient())
+        try
         {
-            smtp.Connect(GetSmtpAddress(), GetSmtpPort());
+            using (var smtp = new SmtpClient())
+            {
+                smtp.Connect(GetSmtpAddress(), GetSmtpPort());
 
-            var smtpUsername = GetFromEmailAddress();
-            var smtpPassword = GetPassword();
-            smtp.Authenticate(smtpUsername, smtpPassword);
+                var smtpUsername = GetFromEmailAddress();
+                var smtpPassword = GetPassword();
+                smtp.Authenticate(smtpUsername, smtpPassword);
 
-            smtp.Send(email);
-            smtp.Disconnect(true);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.Markup($"[red]Failed to send the email. {ex.Message}[/]");
         }
     }
 }

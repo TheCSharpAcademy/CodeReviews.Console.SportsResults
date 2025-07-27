@@ -5,7 +5,7 @@ namespace Sports_Results_Notifier.Services;
 
 public interface IScraperService
 {
-    public HtmlDocument ScrapeHtml(string html);
+    public HtmlDocument ScrapeHtml();
 
     public Game GetGamePlayedInfo(HtmlDocument doc);
 }

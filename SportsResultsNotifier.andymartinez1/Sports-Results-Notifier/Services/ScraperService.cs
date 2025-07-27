@@ -18,7 +18,7 @@ public class ScraperService : IScraperService
         return _configuration["WebsiteToScrape:Website"];
     }
 
-    public HtmlDocument ScrapeHtml(string html)
+    public HtmlDocument ScrapeHtml()
     {
         var url = GetWebsiteString();
         var web = new HtmlWeb();
