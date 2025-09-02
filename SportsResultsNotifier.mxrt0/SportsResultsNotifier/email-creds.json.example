@@ -1,0 +1,10 @@
+{
+  "EmailSettings": {
+    "SmtpHost": "smtp.gmail.com",
+    "SmtpPort": 587,
+    "FromAddress": "YOUR_FROM_ADDRESS",
+    "ToAddress": "YOUR_TO_ADDRESS",
+    "SmtpUser": "YOUR_GMAIL_USERNAME",
+    "SmtpPass": "YOUR_GMAIL_APP_PASSWORD"
+   }
+}
