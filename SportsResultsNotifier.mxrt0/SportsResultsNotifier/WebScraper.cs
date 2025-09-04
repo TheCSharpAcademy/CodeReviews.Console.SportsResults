@@ -15,7 +15,7 @@ public class WebScraper
         string month = DateTime.Today.ToString("MM");
         string day = DateTime.Today.ToString("dd");
         string year = DateTime.Today.ToString("yyyy");
-        var url = "https://www.basketball-reference.com/boxscores/?month=4&day=14&year=2024";//string.Format(BasketballReferenceUrl, month, day, year);
+        var url = string.Format(BasketballReferenceUrl, month, day, year);
         _document = await web.LoadFromWebAsync(url);
 
         Console.WriteLine("\nSuccessfully loaded web document!");
@@ -55,7 +55,6 @@ public class WebScraper
             var score2 = row2.SelectSingleNode(".//td[@class='right']")?.InnerText.Trim();
             var scoreByQuarterTeam2 = _document!.DocumentNode.SelectNodes("//*[@id=\"content\"]/div[3]/div/table[2]/tbody/tr[2]/td[@class='center']");
 
-            //sb.AppendLine("\n- - - - - - - - - - - - - - - - - - - - - -");
             sb.AppendLine($"<h3>Game {i + 1} Result:</h3>");
             sb.AppendLine($"<h4>{team1}: {score1} pts.</h4>");
             sb.AppendLine($"<h4>{team2}: {score2} pts.</h4>");
@@ -67,28 +66,16 @@ public class WebScraper
             numberToTake = row2.Descendants().Any(n => string.Equals(n.InnerText.Trim(), "ot", StringComparison.OrdinalIgnoreCase)) ? 5 : 4;
             if (numberToTake == 5)
             {
-                //sb.AppendLine($"{margin}|  Q1  |  Q2  |  Q3  |  Q4  |  OT  |");
-                //sb.AppendLine($"{margin}- - - - - - - - - - - - - - - - - - -");
                 sb.AppendLine("<th>OT</th>");
             }
-            else
-            {
-                //sb.AppendLine($"{margin}|  Q1  |  Q2  |  Q3  |  Q4  |");
-                //sb.AppendLine($"{margin}- - - - - - - - - - - - - - - -");
-            }
+
             sb.AppendLine("<tr>");
-            //sb.AppendLine($"<tr><td>{team1}</td>: {(margin.Length == team2.Length ? new string(' ', team2.Length - team1.Length) : string.Empty)}{string.Join("   ", scoreByQuarterTeam1.Skip(quarterOffset).Take(numberToTake).Select(s => $"{s.InnerText}p."))}\n");
-            //sb.AppendLine($"{team2}: {(margin.Length == team1.Length ? new string(' ', team1.Length - team2.Length) : string.Empty)}{string.Join("   ", scoreByQuarterTeam2.Skip(quarterOffset).Take(numberToTake).Select(s => $"{s.InnerText}p."))}\n");
 
             var currentGameTopScorer = _document!.DocumentNode
             .SelectSingleNode($"//*[@id=\"content\"]/div[3]/div[{i + 1}]/table[3]/tbody/tr[1]");
             string currentGameTopScorerName = currentGameTopScorer.SelectSingleNode("./td[2]/a")?.InnerText ?? currentGameTopScorer.SelectSingleNode("./td[2]").InnerText;
             string currentGameTopScorerTeam = currentGameTopScorer.SelectSingleNode("./td[2]").InnerText;
             string currentGameTopScorerPts = currentGameTopScorer.SelectSingleNode("./td[@class='right']").InnerText;
-
-            //sb.AppendLine($"\nTop Scorer: {currentGameTopScorerName.Trim()} ({(currentGameTopScorerName != currentGameTopScorerTeam ? currentGameTopScorerTeam.Trim().Split('-')[1] : string.Empty)}) - {currentGameTopScorerPts.Trim()} pts.\n");
-
-            //sb.AppendLine("- - - - - - - - - - - - - - - - - - - - - -\n");
 
             sb.AppendLine($"<tr><td>{team1}</td>{string.Join("", scoreByQuarterTeam1.Skip(quarterOffset).Take(numberToTake).Select(s => $"<td>{s.InnerText}</td>"))}</tr>");
             sb.AppendLine($"<tr><td>{team2}</td>{string.Join("", scoreByQuarterTeam2.Skip(quarterOffset).Take(numberToTake).Select(s => $"<td>{s.InnerText}</td>"))}</tr>");
@@ -105,7 +92,7 @@ public class WebScraper
         }
         string topScorerName = topScorer.SelectSingleNode("./td[2]/a")?.InnerText ?? topScorer.SelectSingleNode("./td[2]").InnerText;
         string topScorerTeam = topScorer.SelectSingleNode("./td[2]").InnerText;
-        //sb.AppendLine($"\nToday's Top Scorer: {topScorerName.Trim()} ({(topScorerName != topScorerTeam ? topScorerTeam.Trim().Split('-')[1] : string.Empty)}) - {topScorerPts} pts.\n");
+
         sb.AppendLine("<p>- - - - - - - - - - - - - - - - - - - - - - - - - -</p>");
         sb.AppendLine($"<strong>Today's Top Scorer: {topScorerName.Trim()} ({(topScorerName != topScorerTeam ? topScorerTeam.Trim().Split('-')[1] : string.Empty)}) - {topScorerPts} pts.</strong>");
         return sb.ToString().TrimEnd();
